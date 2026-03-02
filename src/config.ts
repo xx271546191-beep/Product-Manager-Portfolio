@@ -56,7 +56,7 @@ export const siteConfig = {
    * Two-letter language code for HTML lang attribute and SEO.
    * Examples: 'en', 'id', 'es', 'fr'
    */
-  language: getEnv('SITE_LANGUAGE', 'en'),
+  language: getEnv('SITE_LANGUAGE', 'zh'),
   
   /**
    * Site title
