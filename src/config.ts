@@ -125,13 +125,9 @@ export const siteConfig = {
    * Add or remove items to customize navigation.
    */
   nav: [
-    { label: 'Projects', href: '/projects' },
-    { label: 'Decisions', href: '/decisions' },
-    { label: 'Journey', href: '/journey' },
-    { label: 'Writing', href: '/writing' },
-    { label: 'Speaking', href: '/speaking' },
-    { label: 'Uses', href: '/uses' },
-    { label: 'Contact', href: '/contact' },
+    { label: '项目作品', href: '/projects' },
+    { label: '职业历程', href: '/journey' },
+    { label: '关于我', href: '/contact' },
   ],
 } as const;
 

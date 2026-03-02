@@ -1,139 +1,72 @@
 /**
  * Page Metadata Configuration
  * 
- * Centralized SEO metadata for all static pages. Single source of truth
- * for titles and descriptions to ensure consistency across the site.
- * 
- * Usage:
- * ```astro
- * ---
- * import BaseLayout from '../layouts/BaseLayout.astro';
- * import SEO from '../components/SEO.astro';
- * import { pagesConfig } from '../pages.config';
- * ---
- * 
- * <BaseLayout>
- *   <SEO 
- *     slot="head"
- *     title={pagesConfig.projects.title}
- *     description={pagesConfig.projects.description}
- *   />
- *   <!-- Page content -->
- * </BaseLayout>
- * ```
+ * Centralized SEO metadata for all static pages.
  * 
  * @module pages.config
  */
 
-/**
- * Page metadata interface
- */
 interface PageMeta {
-  /** Page title (used in browser tab and SEO) */
   title: string;
-  
-  /** Page description (used in meta tags and SEO) */
   description: string;
-  
-  /** Page heading (displayed as h1, optional - defaults to title) */
   heading?: string;
-  
-  /** Page intro text (displayed below heading, optional) */
   intro?: string;
 }
 
-/**
- * Pages configuration object
- * 
- * Contains metadata for all static pages. Dynamic pages (like individual
- * project or article pages) generate their own metadata from content.
- */
 export const pagesConfig = {
-  /**
-   * Home page (/)
-   * Note: Home page uses siteConfig for title/description as it represents the site itself
-   */
   home: {
-    title: 'Home',
-    description: 'Engineering leader specializing in system architecture, technical decision-making, and delivering measurable business impact.',
+    title: '首页',
+    description: '产品经理作品集 - 湖南农大硕士，AI知识库产品实习经历',
   },
   
-  /**
-   * Projects listing page (/projects)
-   */
   projects: {
-    title: 'Projects - Case Studies',
-    description: 'Detailed case studies showcasing problem-solving approach, technical decisions, and measurable impact across various engineering projects.',
-    heading: 'Projects',
-    intro: 'Case studies that demonstrate how I approach complex problems, make technical decisions, and deliver measurable impact. Each project tells the story of the challenge, the constraints, the decisions made, and the outcomes achieved.',
+    title: '项目作品',
+    description: '项目案例展示，包括问题分析、解决方案和成果体现。',
+    heading: '项目作品',
+    intro: '这里展示了我参与的项目案例，讲述每个项目的背景、挑战、决策过程和最终成果。',
   },
   
-  /**
-   * Decisions listing page (/decisions)
-   */
   decisions: {
-    title: 'Decisions - Architectural & Technical Choices',
-    description: 'A log of architectural and technical decisions, documenting the context, alternatives considered, and reasoning behind key engineering choices.',
-    heading: 'Decisions',
-    intro: 'A transparent log of architectural and technical decisions I\'ve made throughout my career. Each entry documents the context, alternatives considered, and the reasoning behind the choice.',
+    title: '决策记录',
+    description: '记录工作中的关键决策，包括背景、备选方案和选择理由。',
+    heading: '决策记录',
+    intro: '记录工作中做出的重要决策，分享当时的考量、备选方案和最终选择的原因。',
   },
   
-  /**
-   * Journey timeline page (/journey)
-   */
   journey: {
-    title: 'Journey - Career Growth & Learning Timeline',
-    description: 'A chronological timeline of my professional journey, highlighting key milestones, learning moments, and career transitions that shaped my growth as an engineer.',
-    heading: 'Journey',
-    intro: 'A timeline of my professional growth and learning progression. This isn\'t a resume—it\'s a story of how I\'ve evolved as an engineer, the pivotal moments that shaped my thinking, and the skills I\'ve developed along the way.',
+    title: '职业历程',
+    description: '我的职业发展时间线，展示成长轨迹和重要里程碑。',
+    heading: '职业历程',
+    intro: '记录我的职业发展历程，包括重要的学习经历、实习经历和成长时刻。',
   },
   
-  /**
-   * Writing/blog listing page (/writing)
-   */
   writing: {
-    title: 'Writing - Technical Articles & Insights',
-    description: 'Technical articles, insights, and lessons learned from building software systems and solving engineering challenges.',
-    heading: 'Writing',
-    intro: 'Technical articles, insights, and lessons learned from building software systems. I write about architecture decisions, engineering practices, and the challenges of delivering reliable software at scale.',
+    title: '思考与总结',
+    description: '关于产品设计、用户体验和职业发展的思考。',
+    heading: '思考与总结',
+    intro: '分享我在产品工作中的思考和总结，涵盖产品设计、用户研究和职业发展等方面。',
   },
 
-  /**
-   * Speaking engagements page (/speaking)
-   */
   speaking: {
-    title: 'Speaking - Talks & Presentations',
-    description: 'Conference talks, meetup presentations, podcast appearances, and workshops on software engineering, architecture, and technical leadership.',
-    heading: 'Speaking',
-    intro: 'I regularly speak at conferences, meetups, and on podcasts about software architecture, engineering practices, and technical leadership. Here\'s a collection of my talks and presentations.',
+    title: '分享与交流',
+    description: '参与过的分享活动、演讲和交流。',
+    heading: '分享与交流',
+    intro: '记录我参与过的分享活动，包括演讲、研讨会和交流心得。',
   },
   
-  /**
-   * Uses/tools page (/uses)
-   */
   uses: {
-    title: 'Uses - Tools, Stack & Environment',
-    description: 'A comprehensive list of the tools, technologies, and environment I use for development work.',
-    heading: 'Uses',
-    intro: 'A transparent look at the tools, technologies, and environment that power my development workflow. This page documents what I use and why, helping other engineers discover useful tools and understand my technical context.',
+    title: '工具与技能',
+    description: '我使用的工具和技能栈。',
+    heading: '工具与技能',
+    intro: '分享我在产品工作中使用的工具和技能，包括原型设计、数据分析、项目管理等。',
   },
   
-  /**
-   * Contact page (/contact)
-   */
   contact: {
-    title: 'Contact - Get in Touch',
-    description: 'Get in touch to discuss opportunities, collaborations, or technical challenges.',
-    heading: 'Let\'s Talk',
+    title: '联系我',
+    description: '欢迎联系我讨论产品相关话题。',
+    heading: '联系我',
   },
 } as const;
 
-/**
- * Type export for the pages configuration
- */
 export type PagesConfig = typeof pagesConfig;
-
-/**
- * Type export for a single page metadata
- */
 export type PageConfig = PageMeta;

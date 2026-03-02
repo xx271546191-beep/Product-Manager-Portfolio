@@ -93,18 +93,18 @@ const recentDecisions = allDecisions
         <!-- Left: Value Statement -->
         <div class="hero-left">
           <h1 class="hero-title">
-            I don't just ship projects.<br/>
-            <span class="hero-title-emphasis">I document decisions, trade-offs, and outcomes.</span>
+            我不只是完成项目，<br/>
+            <span class="hero-title-emphasis">我更关注问题、决策与成果的完整呈现。</span>
           </h1>
           <p class="hero-sub">
-            A portfolio built around case studies — not screenshots.
+            这是一个以案例研究为核心的作品集。
           </p>
           <p class="hero-meta">
             {siteConfig.author.name} · {siteConfig.author.title}
           </p>
           <div class="hero-cta">
-            <a href="/projects" class="btn-primary">Explore Case Studies</a>
-            <a href="/decisions" class="btn-secondary">How I Make Decisions</a>
+            <a href="/projects" class="btn-primary">查看项目案例</a>
+            <a href="/journey" class="btn-secondary">了解我的经历</a>
           </div>
         </div>
 
@@ -113,7 +113,7 @@ const recentDecisions = allDecisions
           <div class="case-snapshots">
             {caseSnapshots.map((project) => (
               <a href={`/projects/${project.id}`} class="case-snapshot">
-                <span class="case-label">Case · {project.data.role}</span>
+                <span class="case-label">案例 · {project.data.role}</span>
                 <span class="case-title">{project.data.title}</span>
                 <span class="case-outcome">{project.data.outcomeSummary}</span>
               </a>
@@ -126,60 +126,31 @@ const recentDecisions = allDecisions
     <!-- Introduction -->
     <section class="introduction">
       <p>
-        I'm {siteConfig.author.name}, {siteConfig.author.title.toLowerCase()} focused on building systems that move real business metrics.
+        我是 {siteConfig.author.name}，{siteConfig.author.title}，专注于打造有价值的产品。
       </p>
       <p>
-        Every major decision is documented—because great engineers don't just build things, they explain why.
+        我习惯记录每一个重要决策的过程——因为优秀的产品经理不仅能解决问题，更能说清楚为什么这样选择。
       </p>
-      <ForwardLink href="/journey" text="Read my journey" variant="muted" />
+      <ForwardLink href="/journey" text="了解更多关于我" variant="muted" />
     </section>
-
-    <!-- Recent Decisions -->
-    <section class="recent-decisions">
-      <div class="section-header">
-        <h2>Recent Decisions</h2>
-        <ForwardLink href="/decisions" text="View all" variant="muted" />
-      </div>
-      
-      {recentDecisions.length > 0 ? (
-        <div class="decisions-list">
-          {recentDecisions.map((decision) => {
-            const date = new Date(decision.data.date);
-            const formattedDate = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-            return (
-              <article class="decision-item">
-                <span class="decision-date">{formattedDate}</span>
-                <h3 class="decision-title">{decision.data.title}</h3>
-                <p class="decision-context">{decision.data.context}</p>
-              </article>
-            );
-          })}
-        </div>
-      ) : (
-        <p class="no-decisions">No decisions documented yet.</p>
-      )}
-    </section>
-
-    <!-- Testimonials -->
-    <Testimonials limit={3} />
 
     <!-- What I Think About -->
     <section class="thinking">
-      <h2>Problems I Enjoy Solving</h2>
+      <h2>我感兴趣的问题</h2>
       <p class="thinking-list">
-        How to scale systems without scaling complexity · When to choose consistency over availability · Making legacy codebases maintainable · Designing APIs that last · Building teams that ship · Turning technical debt into technical investment · Documenting decisions so future-you understands past-you
+        如何在产品迭代中平衡用户体验与技术实现 · 如何将AI能力转化为可控可验证的产品功能 · 如何建立产品交付的质量标准 · 如何打造有说服力的产品演示 · 如何推动跨团队协作达成一致
       </p>
     </section>
 
     <!-- CTA -->
     <section class="cta">
-      <h2>Let's Work Together</h2>
+      <h2>欢迎交流</h2>
       <p>
-        Looking for technical leadership, architectural guidance, or someone who documents their thinking? Let's talk.
+        如果你对产品设计、AI产品落地或产品经理职业发展感兴趣，欢迎一起交流探讨。
       </p>
       <div class="cta-buttons">
-        <a href="/projects" class="btn-primary">View My Work</a>
-        <a href="/contact" class="btn-secondary">Get in Touch</a>
+        <a href="/projects" class="btn-primary">查看我的作品</a>
+        <a href="/contact" class="btn-secondary">联系我</a>
       </div>
     </section>
   </main>
