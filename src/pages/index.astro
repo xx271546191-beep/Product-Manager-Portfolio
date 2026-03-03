@@ -4,17 +4,7 @@
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SEO from '../components/SEO.astro';
-import StructuredData from '../components/StructuredData.astro';
-import { getCollection } from 'astro:content';
 import { siteConfig } from '../config';
-
-const allProjects = await getCollection('projects');
-const featuredProjects = allProjects
-  .filter(project => project.data.featured === true)
-  .sort((a, b) => (a.data.order || 999) - (b.data.order || 999))
-  .slice(0, 2);
-
-const caseSnapshots = featuredProjects.slice(0, 3);
 ---
 
 <BaseLayout>
