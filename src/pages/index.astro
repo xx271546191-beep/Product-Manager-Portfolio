@@ -6,30 +6,41 @@ import { siteConfig } from '../config';
 
 const heroTags = ['需求调研', 'PRD / 原型', '测试评估', '知识库 / RAG', '方案汇报'];
 
-const quickFacts = [
+const workShowcaseLinks = [
   {
-    value: '6',
-    label: '项目样本',
-    detail: '覆盖知识库、工业、政务、数字人与具身智能。',
+    title: '交接班 PC 原型',
+    description: '查看某地石化 AI 交接班管理系统 Web 端完整静态原型。',
+    href: '/prototypes/handover-pc.html',
+    external: true,
     tone: 'yellow',
   },
   {
-    value: 'ToB & ToG',
-    label: '场景跨度',
-    detail: '从电信数据中心到工业流程，再到政务与行业解决方案。',
+    title: '交接班 App 原型',
+    description: '查看现场侧交接发起、录音、摘要与待办执行的移动端原型。',
+    href: '/prototypes/handover-app.html',
+    external: true,
     tone: 'blue',
   },
   {
-    value: 'PRD + 原型',
-    label: '典型职责',
-    detail: '能独立完成需求梳理、原型设计、测试推进和汇报表达。',
+    title: '操作票原型',
+    description: '查看某地石化电子操作票 AI 应用完整静态原型界面。',
+    href: '/prototypes/operation-ticket.html',
+    external: true,
     tone: 'pink',
   },
   {
-    value: 'RAG / AI 应用',
-    label: '核心方向',
-    detail: '关注知识库、行业智能化和可交付的 AI 产品路径。',
+    title: '数字人宁姐姐',
+    description: '通过外部链接查看数字人项目展示内容，作为补充作品入口保留。',
+    href: 'https://mp.weixin.qq.com/s/sAfaX1VON2dmfuac5gsDmQ',
+    external: true,
     tone: 'green',
+  },
+  {
+    title: 'RouteRAG GitHub',
+    description: '查看 RouteRAG 当前公开仓库 `MyOCR`，了解项目代码与迭代方向。',
+    href: 'https://github.com/xx271546191-beep/MyOCR',
+    external: true,
+    tone: 'yellow',
   },
 ];
 
@@ -178,16 +189,23 @@ const timeline = [
 
     <section class="section-block">
       <div class="section-head">
-        <span class="section-pill">成果速览</span>
-        <h2 class="section-title">先在 10 秒内看懂我做过什么</h2>
+        <span class="section-pill">项目作品直达</span>
+        <h2 class="section-title">这里放可以直接打开的作品入口</h2>
       </div>
 
-      <div class="fact-grid">
-        {quickFacts.map((fact) => (
-          <article class:list={['fact-card', `fact-card--${fact.tone}`]}>
-            <p class="fact-value">{fact.value}</p>
-            <h3 class="fact-label">{fact.label}</h3>
-            <p class="fact-detail">{fact.detail}</p>
+      <div class="works-grid">
+        {workShowcaseLinks.map((item) => (
+          <article class:list={['work-card', `work-card--${item.tone}`]}>
+            <h3 class="work-card__title">{item.title}</h3>
+            <p class="work-card__description">{item.description}</p>
+            <a
+              href={item.href}
+              class="work-card__link"
+              target={item.external ? '_blank' : undefined}
+              rel={item.external ? 'noopener noreferrer' : undefined}
+            >
+              立即查看
+            </a>
           </article>
         ))}
       </div>
@@ -330,7 +348,7 @@ const timeline = [
 
     .badge--blue,
     .hero-tag--1,
-    .fact-card--blue,
+    .work-card--blue,
     .project-card--blue .project-card__placeholder,
     .workflow-card--blue {
       background: var(--color-tag-blue);
@@ -338,7 +356,7 @@ const timeline = [
 
     .badge--yellow,
     .hero-tag--0,
-    .fact-card--yellow,
+    .work-card--yellow,
     .project-card--yellow .project-card__placeholder,
     .workflow-card--yellow {
       background: var(--color-tag-yellow);
@@ -346,13 +364,13 @@ const timeline = [
 
     .badge--pink,
     .hero-tag--2,
-    .fact-card--pink,
+    .work-card--pink,
     .project-card--pink .project-card__placeholder,
     .workflow-card--pink {
       background: var(--color-tag-pink);
     }
 
-    .fact-card--green,
+    .work-card--green,
     .workflow-card--green {
       background: var(--color-tag-green);
     }
@@ -621,14 +639,21 @@ const timeline = [
       max-width: 13ch;
     }
 
-    .fact-grid,
+    .works-grid,
     .workflow-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 1rem;
     }
 
-    .fact-card,
+    .works-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .workflow-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .work-card,
     .workflow-card,
     .timeline-item {
       border: 2px solid var(--color-border);
@@ -637,14 +662,13 @@ const timeline = [
       box-shadow: var(--shadow-sm);
     }
 
-    .fact-value {
-      margin-bottom: 0.35rem;
-      font-size: 1.55rem;
-      font-weight: 800;
-      line-height: 1;
+    .work-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 220px;
     }
 
-    .fact-label,
+    .work-card__title,
     .workflow-card__title,
     .timeline-title {
       margin-bottom: 0.55rem;
@@ -652,11 +676,39 @@ const timeline = [
       font-weight: 800;
     }
 
-    .fact-detail,
+    .work-card__description,
     .workflow-card__description,
     .timeline-description {
       color: var(--color-text-secondary);
       font-size: 0.95rem;
+    }
+
+    .work-card__description {
+      margin-bottom: 1rem;
+    }
+
+    .work-card__link {
+      margin-top: auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      width: 100%;
+      padding: 0.7rem 1rem;
+      border: 2px solid var(--color-border);
+      border-radius: var(--border-radius-pill);
+      background: rgba(255, 255, 255, 0.7);
+      color: var(--color-text);
+      font-size: 0.9rem;
+      font-weight: 800;
+      text-decoration: none;
+      transition: transform var(--transition-fast), background-color var(--transition-fast);
+    }
+
+    .work-card__link:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--color-text);
     }
 
     .project-grid {
@@ -678,8 +730,9 @@ const timeline = [
     }
 
     .project-card:hover,
+    .work-card:hover,
     .workflow-card:hover,
-    .fact-card:hover {
+    .timeline-item:hover {
       transform: translateY(-4px);
       box-shadow: var(--shadow-md);
     }
@@ -822,7 +875,7 @@ const timeline = [
     @media (max-width: 1080px) {
       .hero,
       .project-grid,
-      .fact-grid,
+      .works-grid,
       .workflow-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -870,6 +923,7 @@ const timeline = [
       }
 
       .fact-grid,
+      .works-grid,
       .workflow-grid,
       .project-grid {
         grid-template-columns: 1fr;
@@ -886,7 +940,7 @@ const timeline = [
       }
 
       .hero-summary,
-      .fact-detail,
+      .work-card__description,
       .workflow-card__description,
       .timeline-description,
       .project-card__summary,
