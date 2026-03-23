@@ -1,0 +1,1632 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>某地石化 AI 交接班管理系统 - App端原型</title>
+  <style>
+    :root {
+      --bg: #d8e3ee;
+      --shell: #f4f7fb;
+      --card: #ffffff;
+      --card-strong: #ffffff;
+      --line: rgba(42, 68, 95, 0.1);
+      --line-strong: rgba(42, 68, 95, 0.2);
+      --text: #11283d;
+      --muted: #6f8297;
+      --brand: #156ec1;
+      --brand-soft: rgba(21, 110, 193, 0.1);
+      --accent: #f3a533;
+      --success: #2ca36c;
+      --danger: #d85555;
+      --shadow: 0 14px 34px rgba(24, 47, 79, 0.08);
+      --shadow-strong: 0 22px 44px rgba(20, 56, 98, 0.16);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --safe-bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
+      --font: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      font-family: var(--font);
+      background:
+        radial-gradient(circle at top left, rgba(21, 110, 193, 0.12), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(243, 165, 51, 0.1), transparent 22%),
+        linear-gradient(180deg, #eef4f9 0%, #d8e3ee 100%);
+      color: var(--text);
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      padding: 20px 12px;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      background: none;
+    }
+
+    .phone {
+      width: min(360px, calc(100vw - 24px));
+      aspect-ratio: 9 / 16;
+      height: auto;
+      border-radius: 38px;
+      padding: 12px;
+      background: #0d1b2a;
+      box-shadow: 0 30px 60px rgba(7, 19, 35, 0.35);
+      position: relative;
+    }
+
+    .screen {
+      height: 100%;
+      border-radius: 30px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at top right, rgba(21, 110, 193, 0.08), transparent 26%),
+        linear-gradient(180deg, #f9fbfd 0%, #f2f5f9 100%);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .island {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 112px;
+      height: 28px;
+      border-radius: 999px;
+      background: rgba(7, 13, 19, 0.95);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 18px 10px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .status-icons {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      color: var(--text);
+    }
+
+    .dot,
+    .bar {
+      display: inline-block;
+      background: currentColor;
+      border-radius: 999px;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+    }
+
+    .bar {
+      width: 18px;
+      height: 10px;
+      border: 1.6px solid currentColor;
+      background: transparent;
+      position: relative;
+    }
+
+    .bar::after {
+      content: "";
+      position: absolute;
+      inset: 1.2px;
+      border-radius: 999px;
+      background: currentColor;
+    }
+
+    .app {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      padding: 0 0 126px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .app::-webkit-scrollbar {
+      display: none;
+    }
+
+    .app-header {
+      display: block;
+      padding: 12px 18px 14px;
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      background: rgba(249, 251, 253, 0.84);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(52, 75, 98, 0.05);
+    }
+
+    .app-title {
+      min-width: 0;
+    }
+
+    .app-title strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1.2;
+    }
+
+    .app-title span {
+      display: block;
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .header-subnav {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(21, 110, 193, 0.08);
+      color: var(--brand);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .content {
+      padding: 0 10px;
+    }
+
+    .surface-card {
+      margin-top: 12px;
+      padding: 14px;
+      background: linear-gradient(180deg, #ffffff 0%, #f5f8fc 100%);
+      border-radius: 26px;
+      color: var(--text);
+      border: 1px solid rgba(42, 68, 95, 0.08);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .surface-card h1 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.25;
+    }
+
+    .surface-card p {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    .surface-meta {
+      position: absolute;
+      top: 12px;
+      left: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 7px 11px;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .hero-metrics {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .hero-metric {
+      min-width: 92px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .hero-metric strong {
+      display: block;
+      font-size: 17px;
+      line-height: 1.1;
+    }
+
+    .hero-metric span {
+      display: block;
+      margin-top: 4px;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.76);
+    }
+
+    .quick-actions {
+      display: grid;
+      gap: 10px;
+      margin-top: 0;
+    }
+
+    .quick-btn {
+      min-height: 72px;
+      border-radius: 18px;
+      font-weight: 700;
+      color: var(--text);
+      background: linear-gradient(180deg, #ffffff 0%, #f6f9fc 100%);
+      border: 1px solid rgba(42, 68, 95, 0.08);
+      padding: 12px 14px;
+      text-align: left;
+      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      gap: 0;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    }
+
+    .quick-btn strong {
+      display: block;
+      font-size: 18px;
+      line-height: 1.35;
+      margin: 0;
+      color: var(--text);
+    }
+
+    .quick-btn-mark {
+      width: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      flex-shrink: 0;
+      margin-left: auto;
+      order: 2;
+      align-self: stretch;
+    }
+
+    .quick-btn-mark svg {
+      width: 30px;
+      height: 30px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      color: var(--brand);
+    }
+
+    .quick-btn-copy {
+      flex: 1;
+      min-width: 0;
+      order: 1;
+      padding: 0 8px 0 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .quick-btn-copy strong {
+      max-width: 100%;
+      font-size: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .home-grid {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .metric-card {
+      padding: 14px 12px;
+      border-radius: 20px;
+      background: linear-gradient(180deg, #ffffff 0%, #f6f9fc 100%);
+      border: 1px solid rgba(42, 68, 95, 0.08);
+      box-shadow: var(--shadow);
+    }
+
+    .metric-card strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1.1;
+      color: var(--text);
+    }
+
+    .metric-card span {
+      display: block;
+      margin-top: 6px;
+      font-size: 11px;
+      line-height: 1.4;
+      color: var(--muted);
+    }
+
+    .home-split {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 10px;
+    }
+
+    .mini-panel {
+      padding: 16px 14px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, #ffffff 0%, #f7fafd 100%);
+      border: 1px solid rgba(42, 68, 95, 0.08);
+      box-shadow: var(--shadow);
+    }
+
+    .mini-panel strong {
+      display: block;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .mini-panel p {
+      margin: 6px 0 0;
+      font-size: 12px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .accent-panel {
+      background: linear-gradient(145deg, #163d6b 0%, #1d5e9f 100%);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.08);
+      box-shadow: var(--shadow-strong);
+    }
+
+    .accent-panel p {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .wide-panel {
+      grid-column: 1 / -1;
+    }
+
+    .section {
+      margin-top: 16px;
+      padding: 18px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 17px;
+    }
+
+    .section-head span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .list-item {
+      display: flex;
+      gap: 12px;
+      padding: 14px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #f8fbfe 0%, #f5f8fc 100%);
+      border: 1px solid rgba(65, 95, 124, 0.06);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+
+    .summary-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .summary-item {
+      padding: 14px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #f8fbfe 0%, #f5f8fc 100%);
+      border: 1px solid rgba(65, 95, 124, 0.06);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+
+    .summary-item button {
+      width: 100%;
+      text-align: left;
+      padding: 0;
+      color: inherit;
+    }
+
+    .summary-item h3 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .summary-item p {
+      margin: 6px 0 0;
+      font-size: 12px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .summary-item.hidden-item {
+      display: none;
+    }
+
+    .summary-item.hidden-item.show {
+      display: block;
+    }
+
+    .more-btn {
+      width: 100%;
+      min-height: 42px;
+      margin-top: 10px;
+      border-radius: 16px;
+      background: rgba(21, 110, 193, 0.08);
+      color: var(--brand);
+      font-weight: 700;
+      border: 1px solid rgba(21, 110, 193, 0.12);
+    }
+
+    .icon-wrap {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .blue {
+      background: rgba(22, 116, 201, 0.12);
+      color: var(--brand);
+    }
+
+    .amber {
+      background: rgba(245, 159, 40, 0.14);
+      color: #d48418;
+    }
+
+    .green {
+      background: rgba(44, 163, 108, 0.14);
+      color: var(--success);
+    }
+
+    .red {
+      background: rgba(216, 85, 85, 0.12);
+      color: var(--danger);
+    }
+
+    .list-item h3,
+    .task-card h3,
+    .log-card h3 {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .list-item p,
+    .task-card p,
+    .log-card p,
+    .timeline-card p,
+    .recording-box p {
+      margin: 4px 0 0;
+      font-size: 12px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(22, 116, 201, 0.08);
+      color: var(--text);
+    }
+
+    .summary-toggle {
+      width: 100%;
+      padding: 0;
+      text-align: left;
+      color: inherit;
+    }
+
+    .summary-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .summary-arrow {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: rgba(22, 116, 201, 0.08);
+      color: var(--brand);
+      font-size: 14px;
+      flex-shrink: 0;
+      transition: transform 0.18s ease;
+    }
+
+    .summary-detail {
+      display: none;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(65, 95, 124, 0.08);
+    }
+
+    .list-item.expanded .summary-detail {
+      display: block;
+    }
+
+    .list-item.expanded .summary-arrow {
+      transform: rotate(180deg);
+    }
+
+    .summary-modal {
+      position: absolute;
+      inset: 0;
+      background: rgba(8, 16, 28, 0.62);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      padding: 20px 16px;
+      backdrop-filter: blur(10px);
+    }
+
+    .summary-modal.open {
+      display: flex;
+    }
+
+    .summary-sheet {
+      width: calc(100% - 24px);
+      max-width: 336px;
+      border-radius: 28px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbfe 100%);
+      box-shadow: 0 28px 60px rgba(19, 36, 59, 0.26);
+      padding: 14px 18px 22px;
+      animation: fadeUp 0.22s ease;
+      transform: translateY(0) scale(1);
+      transition: transform 0.18s ease, opacity 0.18s ease;
+    }
+
+    .sheet-handle {
+      display: none;
+    }
+
+    .sheet-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .sheet-head h3 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.45;
+      letter-spacing: 0.01em;
+    }
+
+    .sheet-close {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: #f2f6fa;
+      color: var(--muted);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .sheet-body p {
+      margin: 14px 0 0;
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--muted);
+    }
+
+    .screen-panel {
+      display: none;
+      animation: fadeUp 0.28s ease;
+      padding: 0 10px;
+    }
+
+    .screen-panel.active {
+      display: block;
+    }
+
+    .mode-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .mode-btn {
+      text-align: left;
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #fbfdff 0%, #f5f8fc 100%);
+      transition: 0.2s ease;
+    }
+
+    .mode-btn.active {
+      border-color: rgba(22, 116, 201, 0.45);
+      background: linear-gradient(180deg, rgba(22, 116, 201, 0.13), rgba(22, 116, 201, 0.05));
+      box-shadow: 0 10px 20px rgba(21, 110, 193, 0.08);
+    }
+
+    .mode-btn strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .field label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .field select,
+    .field input {
+      width: 100%;
+      min-height: 46px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: #f6f9fc;
+      padding: 0 18px;
+      color: var(--text);
+      outline: none;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .recording-box {
+      margin-top: 16px;
+      padding: 18px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(21, 110, 193, 0.1), rgba(21, 110, 193, 0.03));
+      border: 1px solid rgba(22, 116, 201, 0.16);
+    }
+
+    .recording-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .recording-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .pulse {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #a1aebb;
+      box-shadow: 0 0 0 0 rgba(216, 85, 85, 0.3);
+    }
+
+    .pulse.live {
+      background: var(--danger);
+      animation: pulse 1.6s infinite;
+    }
+
+    .record-btn {
+      width: 100%;
+      min-height: 52px;
+      border-radius: 18px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, #e15b5b, #cb4343);
+    }
+
+    .handover-progress {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .progress-step {
+      padding: 11px 8px;
+      border-radius: 16px;
+      text-align: center;
+      background: #f4f7fb;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .progress-step.active {
+      background: rgba(22, 116, 201, 0.1);
+      color: var(--brand);
+      border-color: rgba(22, 116, 201, 0.22);
+    }
+
+    .handover-step {
+      display: none;
+    }
+
+    .handover-step.active {
+      display: block;
+    }
+
+    .step-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .step-back,
+    .step-action {
+      min-height: 46px;
+      border-radius: 16px;
+      font-weight: 700;
+      flex: 1;
+      transition: transform 0.18s ease;
+    }
+
+    .step-back {
+      color: var(--text);
+      border: 1px solid var(--line);
+      background: #f7f9fc;
+    }
+
+    .step-action {
+      color: #fff;
+      background: linear-gradient(135deg, #1c87db, #1668bb);
+      box-shadow: 0 10px 20px rgba(22, 116, 201, 0.18);
+    }
+
+    .mode-preview-card {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 18px;
+      background: #f6f9fc;
+      border: 1px solid rgba(65, 95, 124, 0.08);
+    }
+
+    .module-strip {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .module-item {
+      padding: 12px 6px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbfe 100%);
+      border: 1px solid var(--line);
+      text-align: center;
+      box-shadow: var(--shadow);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .module-item strong {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 6px;
+      color: var(--brand);
+    }
+
+    .module-item:hover,
+    .module-item:active {
+      border-color: rgba(21, 110, 193, 0.18);
+      box-shadow: 0 16px 28px rgba(24, 47, 79, 0.1);
+    }
+
+    .minutes-box,
+    .task-card,
+    .log-card,
+    .timeline-card {
+      padding: 14px;
+      border-radius: 20px;
+      background: linear-gradient(180deg, #fafcff 0%, #f5f8fc 100%);
+      border: 1px solid rgba(65, 95, 124, 0.06);
+    }
+
+    .minutes-box strong,
+    .task-card strong,
+    .log-card strong,
+    .timeline-card strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .minutes-list,
+    .tasks-list,
+    .logs-list,
+    .timeline-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .task-meta,
+    .log-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .task-card {
+      cursor: pointer;
+    }
+
+    .task-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .task-card-top h3 {
+      flex: 1;
+    }
+
+    .task-arrow {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      color: var(--brand);
+      background: rgba(21, 110, 193, 0.08);
+      flex-shrink: 0;
+      transition: transform 0.18s ease;
+      line-height: 1;
+      font-size: 14px;
+    }
+
+    .task-detail {
+      display: none;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(65, 95, 124, 0.08);
+    }
+
+    .task-card.expanded .task-detail {
+      display: block;
+    }
+
+    .task-card.expanded .task-arrow {
+      transform: rotate(180deg);
+    }
+
+    .task-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .task-footer .task-meta {
+      flex: 1;
+      margin-top: 0;
+    }
+
+    .task-status {
+      margin-left: auto;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 72px;
+      text-align: center;
+    }
+
+    .status-open {
+      background: rgba(216, 85, 85, 0.1);
+      color: var(--danger);
+    }
+
+    .status-progress {
+      background: rgba(243, 165, 51, 0.14);
+      color: #cc8617;
+    }
+
+    .status-done {
+      background: rgba(44, 163, 108, 0.12);
+      color: var(--success);
+    }
+
+    .small-pill {
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(21, 110, 193, 0.08);
+      color: var(--brand);
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 20px;
+      padding: 8px 8px 14px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(65, 95, 124, 0.12);
+      box-shadow: 0 14px 30px rgba(41, 66, 99, 0.14);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .nav-btn {
+      min-height: 56px;
+      border-radius: 18px;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 2px;
+      font-size: 11px;
+      font-weight: 700;
+      transition: transform 0.16s ease, background 0.16s ease, color 0.16s ease;
+    }
+
+    .nav-glyph {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      font-size: 16px;
+      line-height: 1;
+      background: rgba(21, 110, 193, 0.05);
+      transition: transform 0.18s ease, background 0.18s ease;
+    }
+
+    .nav-btn.active .nav-glyph {
+      background: rgba(21, 110, 193, 0.12);
+      transform: translateY(-1px) scale(1.06);
+    }
+
+    .nav-btn.pressed .nav-glyph {
+      transform: scale(0.92);
+    }
+
+    .nav-btn.active {
+      color: var(--brand);
+      background: rgba(21, 110, 193, 0.1);
+    }
+
+    .home-indicator {
+      position: absolute;
+      left: 50%;
+      bottom: 8px;
+      transform: translateX(-50%);
+      width: 128px;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(10, 16, 24, 0.92);
+      box-shadow: 0 2px 6px rgba(10, 16, 24, 0.16);
+      pointer-events: none;
+    }
+
+    .subtle-link {
+      font-size: 12px;
+      color: var(--brand);
+      font-weight: 700;
+    }
+
+    .quick-btn:active,
+    .nav-btn:active,
+    .step-action:active,
+    .step-back:active,
+    .mode-btn:active {
+      transform: scale(0.98);
+    }
+
+    @media (max-width: 380px) {
+      .metrics-row,
+      .home-split {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(216, 85, 85, 0.3);
+      }
+      50% {
+        box-shadow: 0 0 0 12px rgba(216, 85, 85, 0);
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+      @media (max-width: 420px) {
+      body {
+        padding: 0;
+      }
+
+      .phone {
+        width: 100vw;
+        min-height: 100vh;
+        height: 100vh;
+        aspect-ratio: auto;
+        border-radius: 0;
+        padding: 0;
+      }
+
+      .screen {
+        min-height: 100vh;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="screen">
+      <div class="island"></div>
+      <div class="status-bar">
+        <span>09:41</span>
+        <div class="status-icons">
+          <span>5G</span>
+          <span class="dot"></span>
+          <span class="bar"></span>
+        </div>
+      </div>
+
+      <div class="app">
+        <section class="app-header">
+          <div class="app-title">
+            <strong>AI交接班</strong>
+            <span>张三 · 炼油一部 三班</span>
+          </div>
+        </section>
+
+        <section id="panel-home" class="screen-panel active">
+          <div class="content">
+            <div class="surface-card">
+              <div class="quick-actions">
+                <button class="quick-btn" type="button" onclick="openHandoverHome()">
+                  <span class="quick-btn-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M12 3v10"></path>
+                      <path d="M8 7v4a4 4 0 0 0 8 0V7"></path>
+                      <path d="M6 11a6 6 0 0 0 12 0"></path>
+                      <path d="M12 17v4"></path>
+                      <path d="M9 21h6"></path>
+                    </svg>
+                  </span>
+                  <span class="quick-btn-copy">
+                    <strong>发起交接班</strong>
+                  </span>
+                </button>
+                <button class="quick-btn" type="button" onclick="showPanel('logs')">
+                  <span class="quick-btn-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M7 4h8l4 4v12H7z"></path>
+                      <path d="M15 4v4h4"></path>
+                      <path d="M10 12h6"></path>
+                      <path d="M10 16h6"></path>
+                    </svg>
+                  </span>
+                  <span class="quick-btn-copy">
+                    <strong>查看历史</strong>
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            <div class="home-grid">
+              <div class="metrics-row">
+                <div class="metric-card">
+                  <strong>98.4%</strong>
+                  <span>交接完成率</span>
+                </div>
+                <div class="metric-card">
+                  <strong>12</strong>
+                  <span>待办任务</span>
+                </div>
+                <div class="metric-card">
+                  <strong>03</strong>
+                  <span>风险提醒</span>
+                </div>
+              </div>
+
+              <div class="mini-panel wide-panel">
+                <strong>今日督办节奏</strong>
+                <p>10:00 联锁测试配合，14:00 仪表组到场校验，17:30 前完成本班闭环。</p>
+              </div>
+            </div>
+
+            <div class="card section">
+              <div class="section-head">
+                <h2>班组摘要</h2>
+                <span>点击查看详情</span>
+              </div>
+              <div class="summary-list">
+                <div class="summary-item">
+                  <button type="button" onclick="openSummaryModal('3#加氢裂化装置整体运行平稳','夜间 02:00 左右发现 P-201A 泵出口压力在 0.05MPa 范围内波动，过滤器已检查，初步判断与调节阀反馈滞后有关，仪表组下午到场处理。建议接班后增加回流压力监测频次，并在联锁测试前再次确认阀位反馈。')">
+                    <h3>3#加氢裂化装置整体运行平稳</h3>
+                    <p>P-201A 泵出口压力有轻微波动，接班后继续观察。</p>
+                  </button>
+                </div>
+                <div class="summary-item">
+                  <button type="button" onclick="openSummaryModal('上午联锁测试需工艺人员配合','10:00 将进行仪表联锁手动测试，张强负责工艺配合和现场确认，测试结束后需要同步记录到本班交接历史，并核对异常点是否闭环。')">
+                    <h3>上午联锁测试需工艺人员配合</h3>
+                    <p>10:00 开始执行，张强负责对接与反馈。</p>
+                  </button>
+                </div>
+                <div class="summary-item">
+                  <button type="button" onclick="openSummaryModal('昨夜遗留维修单待跟进','P-201A 调节阀维修单已报送仪表组，预计下午到场。建议班组提前确认作业票、隔离条件和现场协调安排，避免影响晚班切换。')">
+                    <h3>昨夜遗留维修单待跟进</h3>
+                    <p>仪表组预计下午到场，需要提前准备隔离条件。</p>
+                  </button>
+                </div>
+                <div class="summary-item hidden-item">
+                  <button type="button" onclick="openSummaryModal('防汛物资清单需补充更新','中控室防汛物资台账存在数量缺口，需在本班结束前完成盘点并同步共享群，确保后续班组可以直接接手。')">
+                    <h3>防汛物资清单需补充更新</h3>
+                    <p>本班结束前完成盘点并同步共享群。</p>
+                  </button>
+                </div>
+                <div class="summary-item hidden-item">
+                  <button type="button" onclick="openSummaryModal('接班提醒已生成 3 条风险项','AI 已提炼压力波动、调节阀反馈滞后和巡检频次提升三类风险项，建议接班前在班组会上逐条确认，并同步给接班人。')">
+                    <h3>接班提醒已生成 3 条风险项</h3>
+                    <p>建议在班组会逐条确认后再完成交接。</p>
+                  </button>
+                </div>
+              </div>
+              <button id="moreSummaryBtn" class="more-btn" type="button" onclick="toggleMoreSummary()">展开更多摘要</button>
+            </div>
+
+            <div class="card section">
+              <div class="section-head">
+                <h2>最近动态</h2>
+              </div>
+              <div class="minutes-list">
+                <div class="timeline-card">
+                  <strong>07:18 晨会交接归档完成</strong>
+                </div>
+                <div class="timeline-card">
+                  <strong>07:26 AI 纪要初稿已生成</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="panel-handover" class="screen-panel">
+          <div class="card section">
+            <div class="section-head">
+              <h2>发起交接班</h2>
+              <span>先选择模式</span>
+            </div>
+            <div class="handover-progress">
+              <div id="progress1" class="progress-step active">1. 选择模式</div>
+              <div id="progress2" class="progress-step">2. 设置任务</div>
+              <div id="progress3" class="progress-step">3. 开始录音</div>
+            </div>
+
+            <div id="handover-step-1" class="handover-step active">
+              <div class="mode-grid">
+                <button class="mode-btn active" type="button" data-mode="团体交接班" onclick="beginHandover('团体交接班')">
+                  <strong>团体交接班</strong>
+                </button>
+                <button class="mode-btn" type="button" data-mode="个人交接班" onclick="beginHandover('个人交接班')">
+                  <strong>个人交接班</strong>
+                </button>
+              </div>
+            </div>
+
+            <div id="handover-step-2" class="handover-step">
+              <div class="mode-preview-card">
+                <strong id="modePreview" class="small-pill">团体交接班</strong>
+                <p style="margin-top: 10px;">当前已选交接模式，继续补充任务类型和当前班组信息。</p>
+              </div>
+              <div class="field">
+                <label for="taskType">任务类型</label>
+                <select id="taskType" onchange="syncTaskType()">
+                  <option>日常交接班</option>
+                  <option>专项巡检交接</option>
+                  <option>异常工况说明</option>
+                  <option>设备检修配合</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="shiftName">当前班组</label>
+                <input id="shiftName" value="炼油一部 三班 / 值班长" />
+              </div>
+              <div class="step-actions">
+                <button class="step-back" type="button" onclick="goToHandoverStep(1)">上一步</button>
+                <button class="step-action" type="button" onclick="goToHandoverStep(3)">下一步</button>
+              </div>
+            </div>
+
+            <div id="handover-step-3" class="handover-step">
+              <div class="recording-box">
+                <div class="recording-top">
+                  <div class="recording-indicator">
+                    <span id="recordingDot" class="pulse"></span>
+                    <span id="recordingText">待命中</span>
+                  </div>
+                  <span id="taskPreview" class="small-pill">当前任务：日常交接班</span>
+                </div>
+                <strong>准备开始本次交接录音</strong>
+                <p>录音启动后，系统会围绕当前模式和任务类型完成语音采集，并在下方生成 AI 纪要预览。</p>
+                <button id="recordBtn" class="record-btn" type="button" onclick="toggleRecording()">开始交接班</button>
+              </div>
+              <div class="card section" style="margin-top: 16px; padding: 16px;">
+                <div class="section-head">
+                  <h2>AI纪要预览</h2>
+                  <span>录音后自动生成</span>
+                </div>
+                <div class="minutes-list">
+                  <div class="minutes-box">
+                    <strong>装置工况</strong>
+                    <p>3#加氢裂化装置运行平稳，P-201A 泵出口压力波动约 0.05MPa，初步判断与调节阀反馈滞后有关。</p>
+                  </div>
+                  <div class="minutes-box">
+                    <strong>自动提取任务</strong>
+                    <p>1. 配合上午联锁测试。2. 跟进 P-201A 调节阀维修单。3. 增加回流压力监测频次。</p>
+                  </div>
+                  <div class="minutes-box">
+                    <strong>重点风险提示</strong>
+                    <p>若压力波动持续，建议在接班前再次确认过滤器状态和阀位反馈，并提醒巡检重点复核。</p>
+                  </div>
+                </div>
+              </div>
+              <div class="step-actions">
+                <button class="step-back" type="button" onclick="goToHandoverStep(2)">上一步</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="panel-logs" class="screen-panel">
+          <div class="card section">
+            <div class="section-head">
+              <h2>交接班历史</h2>
+              <span>移动端查询</span>
+            </div>
+            <div class="field">
+              <label for="logDate">日期</label>
+              <input id="logDate" type="date" value="2026-03-18" />
+            </div>
+            <div class="logs-list" style="margin-top: 14px;">
+              <div class="log-card">
+                <h3>JJB-20260318-018</h3>
+                <p>炼油一部 / 三班 / 值班长。已完成交班、接班确认和音频归档。</p>
+                <div class="log-meta">
+                  <span class="small-pill">07:18</span>
+                  <span class="small-pill">AI已生成纪要</span>
+                  <span class="small-pill">已确认</span>
+                </div>
+              </div>
+              <div class="log-card">
+                <h3>JJB-20260318-014</h3>
+                <p>夜班交接记录存在 1 条待补充说明，接班人已查看未签收。</p>
+                <div class="log-meta">
+                  <span class="small-pill">06:42</span>
+                  <span class="small-pill">待确认</span>
+                </div>
+              </div>
+              <div class="log-card">
+                <h3>历史记录</h3>
+                <p>分部级历史已同步 6 条今日更新，可继续查看浏览和流转痕迹。</p>
+                <div class="log-meta">
+                  <span class="small-pill">管理穿透</span>
+                  <span class="small-pill">今日 6 篇</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="panel-tasks" class="screen-panel">
+          <div class="card section">
+            <div class="section-head">
+              <h2>任务督办</h2>
+              <span>今日待办 12 项</span>
+            </div>
+            <div class="tasks-list">
+              <div class="task-card" onclick="toggleTaskDetail(this)">
+                <div class="task-card-top">
+                  <h3>检查 2 号催化塔泵密封</h3>
+                  <span class="task-arrow">⌄</span>
+                </div>
+                <p>来源于炼油一部交接班例会，建议在本班结束前反馈现场复查结果。</p>
+                <div class="task-detail">
+                  <p>详细要求：复核泵体密封处是否存在渗漏、异响和振动异常，并将现场照片上传到班组群。若发现异常，立即通知值班长并登记处理节点。</p>
+                </div>
+                <div class="task-footer">
+                  <div class="task-meta">
+                    <span class="small-pill">高优先级</span>
+                    <span class="small-pill">责任人 王波</span>
+                  </div>
+                  <span class="task-status status-open">未完成</span>
+                </div>
+              </div>
+              <div class="task-card" onclick="toggleTaskDetail(this)">
+                <div class="task-card-top">
+                  <h3>更新中控室防汛物资清单</h3>
+                  <span class="task-arrow">⌄</span>
+                </div>
+                <p>来自分部早会摘要，需要补齐缺失物资数量并同步班组共享群。</p>
+                <div class="task-detail">
+                  <p>详细要求：盘点沙袋、雨衣、应急电筒和对讲机数量，补录缺失项并发到共享群，同时在交接历史里标记“已更新”。</p>
+                </div>
+                <div class="task-footer">
+                  <div class="task-meta">
+                    <span class="small-pill">今日完成</span>
+                    <span class="small-pill">责任人 李娜</span>
+                  </div>
+                  <span class="task-status status-done">已完成</span>
+                </div>
+              </div>
+              <div class="task-card" onclick="toggleTaskDetail(this)">
+                <div class="task-card-top">
+                  <h3>仪表联锁测试记录校对</h3>
+                  <span class="task-arrow">⌄</span>
+                </div>
+                <p>AI 从交接内容中自动提取，涉及联锁手动测试和工艺配合确认。</p>
+                <div class="task-detail">
+                  <p>详细要求：确认测试时间、参与人员、联锁点位和结果记录一致，若发现记录遗漏，需要在 14:00 前补齐并交值班长确认。</p>
+                </div>
+                <div class="task-footer">
+                  <div class="task-meta">
+                    <span class="small-pill">AI提炼</span>
+                    <span class="small-pill">责任人 张强</span>
+                  </div>
+                  <span class="task-status status-progress">进行中</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <nav class="bottom-nav">
+        <button class="nav-btn active" type="button" data-target="home" data-icon="⌂" data-icon-active="●" onclick="showPanel('home', this)">
+          <span class="nav-glyph">●</span>
+          <span>首页</span>
+        </button>
+        <button class="nav-btn" type="button" data-target="handover" data-icon="◎" data-icon-active="◉" onclick="openHandoverHome(this)">
+          <span class="nav-glyph">◎</span>
+          <span>交接</span>
+        </button>
+        <button class="nav-btn" type="button" data-target="logs" data-icon="▣" data-icon-active="◼" onclick="showPanel('logs', this)">
+          <span class="nav-glyph">▣</span>
+          <span>历史</span>
+        </button>
+        <button class="nav-btn" type="button" data-target="tasks" data-icon="◌" data-icon-active="●" onclick="showPanel('tasks', this)">
+          <span class="nav-glyph">◌</span>
+          <span>待办</span>
+        </button>
+      </nav>
+      <div class="home-indicator"></div>
+      <div id="summaryModal" class="summary-modal" onclick="closeSummaryModal(event)">
+        <div class="summary-sheet">
+          <div class="sheet-handle"></div>
+          <div class="sheet-head">
+            <h3 id="summaryModalTitle">摘要详情</h3>
+            <button class="sheet-close" type="button" onclick="closeSummaryModal()">×</button>
+          </div>
+          <div class="sheet-body">
+            <p id="summaryModalBody"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let isRecording = false;
+    let currentHandoverStep = 1;
+
+    function showPanel(name, trigger) {
+      document.querySelectorAll(".screen-panel").forEach((panel) => {
+        panel.classList.toggle("active", panel.id === `panel-${name}`);
+      });
+
+      document.querySelectorAll(".nav-btn").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.target === name);
+      });
+
+      animateNavPress(trigger);
+      refreshNavIcons();
+
+      document.querySelector(".app").scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+    function selectMode(button) {
+      document.querySelectorAll(".mode-btn").forEach((item) => item.classList.remove("active"));
+      button.classList.add("active");
+      document.getElementById("modePreview").textContent = button.dataset.mode;
+    }
+
+    function refreshNavIcons() {
+      document.querySelectorAll(".nav-btn").forEach((btn) => {
+        const glyph = btn.querySelector(".nav-glyph");
+        if (!glyph) return;
+        glyph.textContent = btn.classList.contains("active") ? btn.dataset.iconActive : btn.dataset.icon;
+      });
+    }
+
+    function animateNavPress(trigger) {
+      if (!trigger) return;
+      trigger.classList.add("pressed");
+      setTimeout(() => {
+        trigger.classList.remove("pressed");
+      }, 160);
+    }
+
+    function toggleMoreSummary() {
+      const hiddenItems = document.querySelectorAll(".summary-item.hidden-item");
+      const button = document.getElementById("moreSummaryBtn");
+      const expanded = button.dataset.expanded === "true";
+
+      hiddenItems.forEach((item) => {
+        item.classList.toggle("show", !expanded);
+      });
+
+      button.dataset.expanded = expanded ? "false" : "true";
+      button.textContent = expanded ? "展开更多摘要" : "收起更多摘要";
+    }
+
+    function openSummaryModal(title, body) {
+      document.getElementById("summaryModalTitle").textContent = title;
+      document.getElementById("summaryModalBody").textContent = body;
+      document.getElementById("summaryModal").classList.add("open");
+      document.querySelector(".summary-sheet").style.transform = "translateY(0)";
+    }
+
+    function closeSummaryModal(event) {
+      if (event && event.target.id !== "summaryModal") return;
+      document.getElementById("summaryModal").classList.remove("open");
+      document.querySelector(".summary-sheet").style.transform = "translateY(0)";
+    }
+
+    function toggleTaskDetail(card) {
+      card.classList.toggle("expanded");
+    }
+
+    function openHandoverHome(trigger) {
+      goToHandoverStep(1);
+      showPanel("handover", trigger);
+    }
+
+    function beginHandover(mode) {
+      document.querySelectorAll(".mode-btn").forEach((item) => {
+        item.classList.toggle("active", item.dataset.mode === mode);
+      });
+      document.getElementById("modePreview").textContent = mode;
+      showPanel("handover");
+      goToHandoverStep(2);
+    }
+
+    function goToHandoverStep(step) {
+      currentHandoverStep = step;
+      document.querySelectorAll(".handover-step").forEach((item, index) => {
+        item.classList.toggle("active", index + 1 === step);
+      });
+      document.querySelectorAll(".progress-step").forEach((item, index) => {
+        item.classList.toggle("active", index + 1 <= step);
+      });
+      document.querySelector(".app").scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+    function syncTaskType() {
+      const value = document.getElementById("taskType").value;
+      document.getElementById("taskPreview").textContent = `当前任务：${value}`;
+    }
+
+    function toggleRecording() {
+      isRecording = !isRecording;
+      const dot = document.getElementById("recordingDot");
+      const text = document.getElementById("recordingText");
+      const button = document.getElementById("recordBtn");
+
+      dot.classList.toggle("live", isRecording);
+      text.textContent = isRecording ? "录音中" : "待命中";
+      button.textContent = isRecording ? "结束并生成纪要" : "开始交接班";
+    }
+
+    refreshNavIcons();
+  </script>
+</body>
+</html>
+

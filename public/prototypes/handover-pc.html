@@ -1,0 +1,1301 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>某地石化 AI 交接班管理系统 - Web端原型</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f8fafc;
+        }
+        .sidebar-item-active {
+            background-color: rgba(59, 130, 246, 0.1);
+            border-right: 4px solid #3b82f6;
+            color: #3b82f6;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 1);
+        }
+        .chat-bubble-left {
+            border-radius: 0 12px 12px 12px;
+        }
+        .chat-bubble-right {
+            border-radius: 12px 0 12px 12px;
+        }
+        /* 隐藏滚动条但保留功能 */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .recording-pulse {
+            animation: recordingPulse 1.6s ease-in-out infinite;
+        }
+        .draft-editing {
+            outline: 2px solid rgba(59, 130, 246, 0.22);
+            background-color: rgba(248, 250, 252, 0.92);
+        }
+        @keyframes recordingPulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.18);
+            }
+            50% {
+                box-shadow: 0 0 0 12px rgba(239, 68, 68, 0);
+            }
+        }
+    </style>
+</head>
+<body class="h-screen overflow-hidden flex">
+
+    <!-- 侧边导航栏 -->
+    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0">
+        <div class="p-6 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-lg">
+                    <i class="fas fa-microchip text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-sm font-bold text-slate-800">某地石化AI系统</h1>
+                    <p class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Shift Handover v2.0</p>
+                </div>
+            </div>
+        </div>
+        
+        <nav class="flex-1 py-6 space-y-1">
+            <a href="#" onclick="switchTab('dashboard')" class="nav-item sidebar-item-active flex items-center px-6 py-3 text-sm font-medium transition-colors hover:bg-slate-50">
+                <i class="fas fa-chart-line w-6"></i> 控制台概览
+            </a>
+            <a href="#" onclick="switchTab('ai-handover')" class="nav-item flex items-center px-6 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50">
+                <i class="fas fa-microphone-lines w-6"></i> AI 交接班
+            </a>
+            <a href="#" onclick="switchTab('ai-minutes')" class="nav-item flex items-center px-6 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50">
+                <i class="fas fa-file-waveform w-6"></i> AI 会议纪要
+            </a>
+            <a href="#" onclick="switchTab('logs')" class="nav-item flex items-center px-6 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50">
+                <i class="fas fa-clipboard-list w-6"></i> 交接班日志
+            </a>
+            <a href="#" onclick="switchTab('tasks')" class="nav-item flex items-center px-6 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50">
+                <i class="fas fa-tasks w-6"></i> 任务督办看板
+            </a>
+            <div class="pt-4 pb-2 px-6">
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">系统管理</span>
+            </div>
+            <a href="#" class="nav-item flex items-center px-6 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50">
+                <i class="fas fa-th-large w-6"></i> 模板配置
+            </a>
+            <a href="#" class="nav-item flex items-center px-6 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50">
+                <i class="fas fa-cog w-6"></i> 系统设置
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-slate-100">
+            <div class="flex items-center gap-3 p-2 rounded-xl bg-slate-50">
+                <img src="https://ui-avatars.com/api/?name=Admin&background=random" class="w-8 h-8 rounded-full border border-white" alt="Avatar">
+                <div class="flex-1 overflow-hidden">
+                    <p class="text-xs font-semibold text-slate-700 truncate">李建国 (值班长)</p>
+                    <p class="text-[10px] text-slate-500 truncate">炼油一部 - 三班</p>
+                </div>
+                <button class="text-slate-400 hover:text-red-500 transition-colors">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main class="flex-1 flex flex-col min-w-0 bg-slate-50">
+        
+        <!-- 顶部通栏 -->
+        <header class="h-16 bg-white border-b border-slate-200 px-8 flex items-center justify-between sticky top-0 z-10">
+            <div id="page-title" class="text-lg font-bold text-slate-800">控制台概览</div>
+            <div class="flex items-center gap-6">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" placeholder="搜索日志或任务..." class="pl-10 pr-4 py-2 bg-slate-100 border-none rounded-full text-sm w-64 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                </div>
+                <div class="flex items-center gap-4 text-slate-500">
+                    <button class="relative hover:text-blue-600 transition-colors">
+                        <i class="far fa-bell text-lg"></i>
+                        <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] flex items-center justify-center rounded-full border-2 border-white">3</span>
+                    </button>
+                    <div class="h-6 w-px bg-slate-200"></div>
+                    <div class="text-sm font-medium">2023年10月27日 星期五</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 内容区域切换容器 -->
+        <div class="flex-1 overflow-auto p-8 no-scrollbar">
+            
+            <!-- 1. 控制台概览 (Dashboard) -->
+            <section id="dashboard-content" class="space-y-8 animate-in fade-in duration-500">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-blue-50 text-blue-600 rounded-xl"><i class="fas fa-check-circle text-xl"></i></div>
+                            <span class="text-xs font-bold text-green-500 bg-green-50 px-2 py-1 rounded-lg">+2.5%</span>
+                        </div>
+                        <p class="text-slate-500 text-sm font-medium">交接班完成率</p>
+                        <h3 class="text-2xl font-bold text-slate-800 mt-1">98.4%</h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-orange-50 text-orange-600 rounded-xl"><i class="fas fa-clock text-xl"></i></div>
+                            <span class="text-xs font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded-lg">实时</span>
+                        </div>
+                        <p class="text-slate-500 text-sm font-medium">待处理督办任务</p>
+                        <h3 class="text-2xl font-bold text-slate-800 mt-1">12 <span class="text-sm font-normal text-slate-400">项</span></h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-purple-50 text-purple-600 rounded-xl"><i class="fas fa-microphone-lines text-xl"></i></div>
+                        </div>
+                        <p class="text-slate-500 text-sm font-medium">本月AI节省工时</p>
+                        <h3 class="text-2xl font-bold text-slate-800 mt-1">142 <span class="text-sm font-normal text-slate-400">小时</span></h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-red-50 text-red-600 rounded-xl"><i class="fas fa-triangle-exclamation text-xl"></i></div>
+                        </div>
+                        <p class="text-slate-500 text-sm font-medium">异常工况提醒</p>
+                        <h3 class="text-2xl font-bold text-slate-800 mt-1">03 <span class="text-sm font-normal text-slate-400">条</span></h3>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-200 p-8">
+                        <div class="flex justify-between items-center mb-6">
+                            <h4 class="font-bold text-slate-800">各装置交接趋势</h4>
+                            <select class="text-xs font-medium bg-slate-100 border-none rounded-lg px-3 py-2 outline-none">
+                                <option>最近7天</option>
+                                <option>最近30天</option>
+                            </select>
+                        </div>
+                        <div class="h-64 flex items-end justify-between gap-2 px-4">
+                            <div class="w-12 bg-blue-100 rounded-t-lg relative group h-[60%]"><div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">60%</div></div>
+                            <div class="w-12 bg-blue-200 rounded-t-lg relative group h-[75%]"><div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">75%</div></div>
+                            <div class="w-12 bg-blue-400 rounded-t-lg relative group h-[90%]"><div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">90%</div></div>
+                            <div class="w-12 bg-blue-600 rounded-t-lg relative group h-[95%]"><div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">95%</div></div>
+                            <div class="w-12 bg-blue-300 rounded-t-lg relative group h-[70%]"><div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">70%</div></div>
+                            <div class="w-12 bg-blue-500 rounded-t-lg relative group h-[85%]"><div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">85%</div></div>
+                            <div class="w-12 bg-blue-700 rounded-t-lg relative group h-[98%]"><div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">98%</div></div>
+                        </div>
+                        <div class="flex justify-between mt-4 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-3xl border border-slate-200 p-8">
+                        <h4 class="font-bold text-slate-800 mb-6">最新AI任务提炼</h4>
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-full bg-orange-100 flex-shrink-0 flex items-center justify-center text-orange-600 font-bold">A</div>
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-800">检查2号催化塔泵密封</p>
+                                    <p class="text-xs text-slate-400 mt-1">来源: 炼油一部交接班例会</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-full bg-blue-100 flex-shrink-0 flex items-center justify-center text-blue-600 font-bold">B</div>
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-800">更新中控室防汛物资清单</p>
+                                    <p class="text-xs text-slate-400 mt-1">来源: 分部早会摘要</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-full bg-green-100 flex-shrink-0 flex items-center justify-center text-green-600 font-bold">C</div>
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-800">仪表联锁测试记录校对</p>
+                                    <p class="text-xs text-slate-400 mt-1">来源: 仪表组内部交接</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="w-full mt-8 py-3 text-sm font-bold text-blue-600 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors">查看全部任务看板</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. AI 交接班 (AI Handover) -->
+            <section id="ai-handover-content" class="hidden animate-in fade-in duration-500">
+                <div class="max-w-4xl mx-auto">
+                    <div class="mb-8">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-full text-xs font-bold tracking-wide">
+                            <i class="fas fa-sparkles"></i> AI辅助录音交接
+                        </div>
+                        <h2 class="mt-4 text-3xl font-bold text-slate-800">AI交接班发起台</h2>
+                        <p class="mt-3 text-sm text-slate-500 leading-relaxed">按顺序完成交接班模式、任务类型和录音启动设置，系统将根据你的选择自动进入本次交接班流程。</p>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
+                            <div class="flex items-center gap-4 mb-6">
+                                <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                                    <i class="fas fa-users text-lg"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">模块一</p>
+                                    <h3 class="text-xl font-bold text-slate-800">选择交接班模式</h3>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <button type="button" class="handover-mode-btn border-2 border-blue-500 bg-blue-50 rounded-2xl p-5 text-left transition-all" data-mode="团体交接班">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <span class="text-sm font-bold text-blue-700">团体交接班</span>
+                                        <i class="fas fa-people-group text-blue-500"></i>
+                                    </div>
+                                    <p class="text-sm text-slate-600 leading-relaxed">适用于班组例会、多岗位联合交接，支持多人连续发言记录。</p>
+                                </button>
+                                <button type="button" class="handover-mode-btn border-2 border-slate-200 rounded-2xl p-5 text-left transition-all hover:border-blue-300 hover:bg-slate-50" data-mode="个人交接班">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <span class="text-sm font-bold text-slate-700">个人交接班</span>
+                                        <i class="fas fa-user text-slate-400"></i>
+                                    </div>
+                                    <p class="text-sm text-slate-600 leading-relaxed">适用于单岗值守、点对点交班，快速记录个人任务和异常说明。</p>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-white to-amber-50 border border-amber-100 rounded-3xl p-8 shadow-sm">
+                            <div class="flex items-center gap-4 mb-6">
+                                <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center">
+                                    <i class="fas fa-list-check text-lg"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-amber-500 uppercase tracking-widest">模块二</p>
+                                    <h3 class="text-xl font-bold text-slate-800">选择任务类型</h3>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch">
+                                <div class="flex flex-col justify-between rounded-2xl bg-white border border-amber-100 p-5">
+                                    <label for="task-type" class="block text-sm font-semibold text-slate-700 mb-3">本次交接班任务分类</label>
+                                    <select id="task-type" class="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                        <option value="日常交接班">日常交接班</option>
+                                        <option value="特殊任务1">特殊任务1</option>
+                                        <option value="特殊任务2">特殊任务2</option>
+                                        <option value="特殊任务3">特殊任务3</option>
+                                        <option value="特殊任务4">特殊任务4</option>
+                                        <option value="特殊任务5">特殊任务5</option>
+                                    </select>
+                                    <p class="mt-3 text-xs text-slate-400">支持常规交接与多种专项任务场景，便于后续按模板生成对应记录。</p>
+                                </div>
+                                <div class="flex flex-col justify-between rounded-2xl bg-amber-50 border border-amber-100 p-5 text-sm text-slate-600">
+                                    <div>
+                                        <p class="text-xs font-bold text-amber-600 uppercase tracking-widest mb-3">当前选择</p>
+                                        <span id="task-type-preview" class="block text-lg font-bold text-slate-800">当前任务：日常交接班</span>
+                                    </div>
+                                    <div class="mt-4 pt-4 border-t border-amber-100 text-xs leading-relaxed text-slate-500">
+                                        交接班开始后，系统会按当前任务类型挂接相应的话术提取和内容归档规则。
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-sky-50 via-white to-blue-50 border border-blue-100 rounded-3xl p-8 shadow-sm">
+                            <div class="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-6 items-stretch">
+                                <div class="rounded-2xl bg-white border border-blue-100 p-6">
+                                    <div class="flex items-center gap-4 mb-5">
+                                        <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center">
+                                            <i class="fas fa-microphone-lines text-lg"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs font-bold text-blue-500 uppercase tracking-widest">模块三</p>
+                                            <h3 class="text-xl font-bold text-slate-800">开始交接班录音</h3>
+                                        </div>
+                                    </div>
+                                    <p id="recording-status" class="text-sm text-slate-600 leading-relaxed">录音未开始。请确认交接班模式与任务类型后，点击右侧按钮启动录音。</p>
+                                    <div class="mt-5 flex flex-wrap gap-3 text-xs">
+                                        <span id="selected-mode-tag" class="px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-slate-700">模式：团体交接班</span>
+                                        <span id="selected-task-tag" class="px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-slate-700">任务：日常交接班</span>
+                                    </div>
+                                    <div class="mt-5 rounded-2xl bg-slate-50 border border-slate-200 px-4 py-4 text-sm text-slate-500 leading-relaxed">
+                                        系统将围绕当前模式与任务类型完成语音采集，并为后续转写、纪要生成和任务提炼提供输入。
+                                    </div>
+                                </div>
+
+                                <div class="rounded-2xl bg-blue-50 border border-blue-100 p-6 flex flex-col justify-between">
+                                    <div class="flex items-center gap-3 mb-5">
+                                        <div id="recording-indicator" class="w-4 h-4 rounded-full bg-slate-300"></div>
+                                        <span id="recording-indicator-text" class="text-sm font-semibold text-slate-700">待命中</span>
+                                    </div>
+                                    <button id="start-recording-btn" type="button" onclick="toggleRecording()" class="w-full py-4 rounded-2xl bg-red-500 hover:bg-red-600 text-white font-bold transition-all active:scale-95">
+                                        <i class="fas fa-microphone mr-2"></i> 开始交接班
+                                    </button>
+                                    <p class="mt-4 text-xs text-slate-500 leading-relaxed">点击后模拟进入录音状态，可用于演示“AI交接班”入口和操作流程。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. AI 会议纪要 (AI Minutes) - 核心双栏工作台 -->
+            <section id="ai-minutes-content" class="hidden h-full flex flex-col animate-in slide-in-from-right duration-500">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-4">
+                        <div class="px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-200 cursor-pointer">
+                            <i class="fas fa-plus mr-2"></i> 新建音频分析
+                        </div>
+                        <div class="text-sm text-slate-500">
+                            <i class="fas fa-file-audio mr-2"></i> 炼油一部_20231027_早会.mp3
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <button class="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold text-slate-600 bg-white hover:bg-slate-50 transition-colors">
+                            <i class="fas fa-download mr-2"></i> 导出记录
+                        </button>
+                        <button id="btn-edit-draft" onclick="toggleDraftEdit()" class="px-4 py-2 border border-blue-200 rounded-xl text-sm font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors">
+                            <i class="fas fa-pen-to-square mr-2"></i> 修改稿子
+                        </button>
+                        <button id="btn-generate" onclick="simulateAI()" class="px-4 py-2 bg-emerald-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-emerald-200 hover:bg-emerald-600 transition-all active:scale-95">
+                            <i class="fas fa-wand-magic-sparkles mr-2"></i> AI 智能生成
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex-1 flex gap-8 min-h-0 overflow-hidden">
+                    <!-- 左侧：语音转写区 (ASR Result) -->
+                    <div class="flex-1 bg-white rounded-3xl border border-slate-200 flex flex-col overflow-hidden shadow-sm">
+                        <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                            <h5 class="font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fas fa-microphone-lines text-blue-500"></i> 音频转写原始数据
+                            </h5>
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 text-[10px] font-bold rounded uppercase">自动识别模式</span>
+                        </div>
+                        <div class="flex-1 overflow-y-auto p-8 space-y-8 no-scrollbar">
+                            <div class="flex gap-4">
+                                <div class="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">发言1</div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <span class="text-xs font-bold text-slate-700">陈工 (运行一部)</span>
+                                        <span class="text-[10px] text-slate-400">00:12</span>
+                                    </div>
+                                    <div class="chat-bubble-left bg-slate-100 p-4 text-sm text-slate-600 leading-relaxed">
+                                        各位，今天早班交接一下。3号加氢裂化装置目前运行平稳，但是昨天夜里2点左右发现P-201A泵的出口压力有微弱波动，范围在0.05兆帕左右，巡检注意观察。
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 flex-row-reverse">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">发言2</div>
+                                <div class="flex-1 text-right">
+                                    <div class="flex items-center gap-2 mb-2 justify-end">
+                                        <span class="text-[10px] text-slate-400">00:45</span>
+                                        <span class="text-xs font-bold text-slate-700">李班长</span>
+                                    </div>
+                                    <div class="chat-bubble-right bg-blue-600 p-4 text-sm text-white leading-relaxed inline-block text-left max-w-[85%]">
+                                        收到。出口压力波动是否排查过过滤器堵塞？另外，今天上午10点有个仪表联锁的手动测试，需要工艺人员配合，张强你负责一下。
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">发言1</div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <span class="text-xs font-bold text-slate-700">陈工 (运行一部)</span>
+                                        <span class="text-[10px] text-slate-400">01:05</span>
+                                    </div>
+                                    <div class="chat-bubble-left bg-slate-100 p-4 text-sm text-slate-600 leading-relaxed">
+                                        过滤器昨天检查过了，初步判断是调节阀反馈有点滞后，已经报单给仪表组了，他们说今天下午过来看。
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 右侧：结构化报告区 (AI Summary) -->
+                    <div class="w-2/5 bg-white rounded-3xl border border-slate-200 flex flex-col overflow-hidden shadow-sm">
+                        <div class="p-6 border-b border-slate-100 bg-slate-50/50">
+                            <h5 class="font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fas fa-wand-magic-sparkles text-emerald-500"></i> AI 结构化报告初稿
+                            </h5>
+                        </div>
+                        <div id="ai-report-view" class="flex-1 overflow-y-auto p-6 space-y-6">
+                            <!-- 初始占位 -->
+                            <div id="ai-loading" class="hidden flex flex-col items-center justify-center h-full text-slate-400 animate-pulse">
+                                <i class="fas fa-brain text-4xl mb-4 text-blue-200"></i>
+                                <p class="text-sm font-medium">正在深度分析对话逻辑内容...</p>
+                            </div>
+                            <div id="ai-placeholder" class="flex flex-col items-center justify-center h-full text-slate-400 border-2 border-dashed border-slate-100 rounded-2xl">
+                                <p class="text-sm font-medium">点击上方按钮执行智能解析</p>
+                            </div>
+
+                            <!-- 解析后的内容 (默认隐藏) -->
+                            <div id="ai-result" class="hidden space-y-6">
+                                <div>
+                                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">装置工况</label>
+                                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                        <div class="flex items-start gap-2 mb-2 text-sm">
+                                            <span class="text-blue-600 mt-1"><i class="fas fa-info-circle"></i></span>
+                                            <span class="text-slate-700 font-medium">3#加氢裂化装置：运行平稳</span>
+                                        </div>
+                                        <div class="flex items-start gap-2 text-sm">
+                                            <span class="text-orange-500 mt-1"><i class="fas fa-triangle-exclamation"></i></span>
+                                            <span class="text-slate-700">P-201A泵出口压力波动 (0.05MPa)，调节阀反馈滞后。</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">自动提取待办任务</label>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-xl">
+                                            <div class="flex items-center gap-3 text-sm">
+                                                <i class="far fa-square text-slate-300"></i>
+                                                <span class="font-medium text-slate-700">仪表联锁手动测试配合</span>
+                                            </div>
+                                            <span class="text-[10px] px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full font-bold">张强</span>
+                                        </div>
+                                        <div class="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-xl">
+                                            <div class="flex items-center gap-3 text-sm">
+                                                <i class="far fa-square text-slate-300"></i>
+                                                <span class="font-medium text-slate-700">跟进P-201A调节阀维修单</span>
+                                            </div>
+                                            <span class="text-[10px] px-2 py-0.5 bg-slate-50 text-slate-600 rounded-full font-bold">仪表组</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">重点风险提示</label>
+                                    <div class="p-4 bg-red-50 text-red-700 rounded-xl border border-red-100 text-xs leading-relaxed">
+                                        AI预警：提及“压力波动”与“调节阀滞后”，建议增加对该节点的回流压力监测频次。
+                                    </div>
+                                </div>
+
+                                <button class="w-full py-4 bg-blue-600 text-white rounded-2xl font-bold shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all">一键发布纪要并分派任务</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. 交接班日志 (Logs) -->
+            <section id="logs-content" class="hidden animate-in fade-in duration-500">
+                <div class="space-y-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                        <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                                    <i class="fas fa-book-open"></i>
+                                </div>
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg">交班入口</span>
+                            </div>
+                            <p class="text-sm text-slate-500">交班清单</p>
+                            <h3 class="mt-2 text-2xl font-bold text-slate-800">18 <span class="text-sm font-normal text-slate-400">份待核对</span></h3>
+                            <p class="mt-3 text-xs text-slate-400 leading-relaxed">按运行部、装置、班组、岗位自动匹配模板，支撑装置运行、巡检、异常和重点提醒填写。</p>
+                        </div>
+                        <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                                    <i class="fas fa-user-check"></i>
+                                </div>
+                                <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">接班确认</span>
+                            </div>
+                            <p class="text-sm text-slate-500">接班清单</p>
+                            <h3 class="mt-2 text-2xl font-bold text-slate-800">12 <span class="text-sm font-normal text-slate-400">份待确认</span></h3>
+                            <p class="mt-3 text-xs text-slate-400 leading-relaxed">支持接班人员补充、修订并留痕，确保交班人与接班人共同完成双向确认。</p>
+                        </div>
+                        <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                                    <i class="fas fa-shield-check"></i>
+                                </div>
+                                <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-lg">最终核对</span>
+                            </div>
+                            <p class="text-sm text-slate-500">确认清单</p>
+                            <h3 class="mt-2 text-2xl font-bold text-slate-800">09 <span class="text-sm font-normal text-slate-400">份待发布</span></h3>
+                            <p class="mt-3 text-xs text-slate-400 leading-relaxed">集中展示交接参与人、表格内容和重点提醒，作为最终确认与追溯依据。</p>
+                        </div>
+                        <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center">
+                                    <i class="fas fa-building-shield"></i>
+                                </div>
+                                <span class="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded-lg">管理穿透</span>
+                            </div>
+                            <p class="text-sm text-slate-500">值班日志</p>
+                            <h3 class="mt-2 text-2xl font-bold text-slate-800">06 <span class="text-sm font-normal text-slate-400">篇今日更新</span></h3>
+                            <p class="mt-3 text-xs text-slate-400 leading-relaxed">面向分部级、运行部级、车间级管理使用，沉淀生产运行、重大事项和后续关注事项。</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+                        <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4 mb-6">
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-800">交接班日志查询中心</h3>
+                                <p class="mt-2 text-sm text-slate-500">支持按日期、装置、班组、岗位、运行部和日志类型进行分类查询，并查看浏览、流转和操作痕迹。</p>
+                            </div>
+                            <div class="flex flex-wrap gap-3">
+                                <button class="px-4 py-2 bg-slate-900 text-white rounded-xl text-sm font-bold">新建日志</button>
+                                <button class="px-4 py-2 border border-slate-200 bg-white text-slate-600 rounded-xl text-sm font-bold">导出PDF</button>
+                                <button class="px-4 py-2 border border-slate-200 bg-white text-slate-600 rounded-xl text-sm font-bold">导出Word</button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-4">
+                            <input id="log-filter-date" type="date" value="2026-03-18" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                            <select id="log-filter-unit" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                                <option>全部装置</option>
+                                <option>3#加氢裂化</option>
+                                <option>2#催化装置</option>
+                                <option>公用工程</option>
+                                <option>常减压装置</option>
+                                <option>硫磺回收</option>
+                            </select>
+                            <select id="log-filter-team" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                                <option>全部班组</option>
+                                <option>炼油一部三班</option>
+                                <option>炼油一部四班</option>
+                                <option>公用工程一班</option>
+                                <option>炼油二部二班</option>
+                                <option>硫磺回收夜班</option>
+                            </select>
+                            <select id="log-filter-role" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                                <option>全部岗位</option>
+                                <option>外操</option>
+                                <option>内操</option>
+                                <option>值班长</option>
+                                <option>班长</option>
+                                <option>工艺工程师</option>
+                            </select>
+                            <select id="log-filter-dept" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                                <option>全部运行部</option>
+                                <option>炼油一部</option>
+                                <option>炼油二部</option>
+                                <option>公用工程部</option>
+                                <option>储运部</option>
+                            </select>
+                            <select id="log-filter-type" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                                <option>日志类型：全部</option>
+                                <option>交班清单</option>
+                                <option>接班清单</option>
+                                <option>确认清单</option>
+                                <option>值班日志</option>
+                            </select>
+                        </div>
+
+                        <div class="mt-6 rounded-3xl bg-slate-50 border border-slate-200 overflow-hidden">
+                            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                                <h4 class="font-bold text-slate-800">日志列表</h4>
+                                <span id="log-results-count" class="text-xs font-bold text-slate-400 uppercase tracking-widest">共 0 条案例</span>
+                            </div>
+                            <div id="log-cases-list" class="p-4 space-y-4"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                            <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+                                <h4 class="font-bold text-slate-800">日志详情与确认留痕</h4>
+                                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">详情 / 浏览 / 流转</span>
+                            </div>
+                            <div id="log-detail-panel" class="p-6 space-y-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">基础信息</p>
+                                            <p class="text-sm font-semibold text-slate-800">交接班日志编号：JJB-20260318-018</p>
+                                            <p class="mt-2 text-xs text-slate-500">运行部：炼油一部</p>
+                                            <p class="mt-1 text-xs text-slate-500">装置：3#加氢裂化</p>
+                                            <p class="mt-1 text-xs text-slate-500">班组 / 岗位：三班 / 值班长</p>
+                                        </div>
+                                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">参与与确认</p>
+                                            <p class="text-xs text-slate-500">交班参与人：陈工、张强、王波</p>
+                                            <p class="mt-1 text-xs text-slate-500">接班参与人：李班长、赵磊</p>
+                                            <p class="mt-1 text-xs text-slate-500">确认时间：2026-03-18 07:18</p>
+                                            <p class="mt-1 text-xs text-slate-500">音频附件：早班交接_20260318.wav</p>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">交班清单</p>
+                                        <div class="rounded-2xl border border-slate-200 overflow-hidden">
+                                            <table class="w-full text-sm">
+                                                <thead class="bg-slate-50 text-slate-500">
+                                                    <tr>
+                                                        <th class="text-left px-4 py-3 font-semibold">字段</th>
+                                                        <th class="text-left px-4 py-3 font-semibold">内容</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="divide-y divide-slate-100">
+                                                    <tr>
+                                                        <td class="px-4 py-3 text-slate-500">装置运行情况</td>
+                                                        <td class="px-4 py-3 text-slate-700">3#加氢裂化装置总体平稳，反应温度和循环氢压在控制范围内。</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="px-4 py-3 text-slate-500">重点巡检情况</td>
+                                                        <td class="px-4 py-3 text-slate-700">夜班已完成P-201A、E-102、火炬系统巡检，P-201A压力波动需持续观察。</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="px-4 py-3 text-slate-500">异常事项</td>
+                                                        <td class="px-4 py-3 text-slate-700">调节阀反馈滞后，已通知仪表组下午处理。</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="px-4 py-3 text-slate-500">待处理事项</td>
+                                                        <td class="px-4 py-3 text-slate-700">配合10:00联锁手动测试，跟进维修工单审批状态。</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="px-4 py-3 text-slate-500">重点提醒</td>
+                                                        <td class="px-4 py-3 text-slate-700">加强回流压力监测频次，关注异常波动是否扩大。</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                        <div class="p-5 bg-emerald-50 rounded-2xl border border-emerald-100">
+                                            <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-3">接班清单</p>
+                                            <p class="text-sm text-slate-700 leading-relaxed">接班人员已对巡检结果进行补充确认，并新增“联锁测试前先核对隔离阀状态”的说明，所有修订均已留痕。</p>
+                                        </div>
+                                        <div class="p-5 bg-amber-50 rounded-2xl border border-amber-100">
+                                            <p class="text-[10px] font-bold text-amber-600 uppercase tracking-widest mb-3">确认清单</p>
+                                            <p class="text-sm text-slate-700 leading-relaxed">最终确认页集中展示交班人与接班人、重点提醒事项、表格内容和关键补充文字，支持正式确认前快速复核。</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                        <div class="p-5 bg-purple-50 rounded-2xl border border-purple-100">
+                                            <p class="text-[10px] font-bold text-purple-600 uppercase tracking-widest mb-3">值班日志贯通</p>
+                                            <p class="text-sm text-slate-700 leading-relaxed">当前日志已同步至运行部值班日志草稿，自动带入本班次生产运行情况、重点协调事项、遗留事项和后续关注事项。</p>
+                                        </div>
+                                        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
+                                            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">浏览与流转记录</p>
+                                            <div class="space-y-2 text-sm text-slate-600">
+                                                <p>07:20 李建国 查看日志详情</p>
+                                                <p>07:22 系统推送至运行部值班日志</p>
+                                                <p>07:30 调度端接收重点事项提醒</p>
+                                                <p>07:35 AI提取 2 项督办任务待审批</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+                                <h4 class="font-bold text-slate-800 mb-4">交接班例会</h4>
+                                <p class="text-sm text-slate-500 leading-relaxed">从已完成交接班日志中筛选重点内容，自动生成会议摘要、风险提示和例会材料初稿。</p>
+                                <button class="mt-5 w-full py-3 rounded-2xl bg-blue-50 text-blue-600 font-bold hover:bg-blue-100 transition-colors">汇总生成例会材料</button>
+                            </div>
+                            <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+                                <h4 class="font-bold text-slate-800 mb-4">上报调度重要记事</h4>
+                                <p class="text-sm text-slate-500 leading-relaxed">独立录入需上报的重要事项，支持文字、图片、附件，并按规范格式推送至管理端。</p>
+                                <button class="mt-5 w-full py-3 rounded-2xl bg-amber-50 text-amber-600 font-bold hover:bg-amber-100 transition-colors">生成上报内容</button>
+                            </div>
+                            <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+                                <h4 class="font-bold text-slate-800 mb-4">音频交接接入</h4>
+                                <p class="text-sm text-slate-500 leading-relaxed">支持直接发起录音、导入录音文件或接入会议音频，为语音转写和记录生成提供统一入口。</p>
+                                <button class="mt-5 w-full py-3 rounded-2xl bg-emerald-50 text-emerald-600 font-bold hover:bg-emerald-100 transition-colors">接入新的交接音频</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. 任务督办看板 (Tasks) -->
+            <section id="tasks-content" class="hidden animate-in zoom-in duration-300">
+                <div class="flex items-center gap-4 mb-8 overflow-x-auto pb-2 no-scrollbar">
+                    <button class="px-6 py-2 bg-slate-800 text-white rounded-full text-sm font-bold shadow-lg shadow-slate-200 whitespace-nowrap">全部任务 (24)</button>
+                    <button class="px-6 py-2 bg-white text-slate-600 border border-slate-200 rounded-full text-sm font-bold hover:bg-slate-50 whitespace-nowrap transition-colors">进行中 (8)</button>
+                    <button class="px-6 py-2 bg-white text-slate-600 border border-slate-200 rounded-full text-sm font-bold hover:bg-slate-50 whitespace-nowrap transition-colors">待审批 (4)</button>
+                    <button class="px-6 py-2 bg-white text-slate-600 border border-slate-200 rounded-full text-sm font-bold hover:bg-slate-50 whitespace-nowrap transition-colors">已完成 (12)</button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- 任务卡片示例 -->
+                    <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-2 h-full bg-orange-500"></div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-[10px] font-bold text-orange-500 bg-orange-50 px-2 py-1 rounded">高优先级</span>
+                            <span class="text-xs text-slate-400">截止: 今日 18:00</span>
+                        </div>
+                        <h6 class="font-bold text-slate-800 mb-2">仪表联锁手动测试配合</h6>
+                        <p class="text-xs text-slate-500 mb-6 leading-relaxed">需要配合仪表组对加氢裂化装置进行年度联锁测试，确保工艺参数触发正确。</p>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="flex -space-x-2">
+                                <img src="https://ui-avatars.com/api/?name=Z&background=3b82f6&color=fff" class="w-6 h-6 rounded-full border-2 border-white">
+                                <img src="https://ui-avatars.com/api/?name=L&background=10b981&color=fff" class="w-6 h-6 rounded-full border-2 border-white">
+                            </div>
+                            <button class="text-xs font-bold text-blue-600 hover:underline">详情 <i class="fas fa-chevron-right ml-1"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-2 h-full bg-blue-500"></div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-[10px] font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded">待审批</span>
+                            <span class="text-xs text-slate-400">截止: 明日 12:00</span>
+                        </div>
+                        <h6 class="font-bold text-slate-800 mb-2">更新中控室防汛物资清单</h6>
+                        <p class="text-xs text-slate-500 mb-6 leading-relaxed">AI自动提取任务：检查并重新登记防汛专用沙袋、抽水泵及应急照明设备。</p>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="flex -space-x-2">
+                                <img src="https://ui-avatars.com/api/?name=A&background=random" class="w-6 h-6 rounded-full border-2 border-white">
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="px-3 py-1 bg-green-500 text-white rounded text-[10px] font-bold">同意</button>
+                                <button class="px-3 py-1 bg-slate-100 text-slate-600 rounded text-[10px] font-bold">驳回</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-3xl border border-dashed border-slate-300 p-6 flex flex-col items-center justify-center text-slate-400 hover:border-blue-400 hover:text-blue-400 transition-all cursor-pointer">
+                        <i class="fas fa-plus-circle text-3xl mb-2"></i>
+                        <span class="text-sm font-bold">手动创建督办任务</span>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // 标签切换逻辑
+        function switchTab(tabId) {
+            const sections = ['dashboard-content', 'ai-handover-content', 'ai-minutes-content', 'logs-content', 'tasks-content'];
+            const navItems = document.querySelectorAll('.nav-item');
+            const pageTitle = document.getElementById('page-title');
+
+            sections.forEach(s => {
+                document.getElementById(s).classList.add('hidden');
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('sidebar-item-active');
+                item.classList.add('text-slate-600');
+            });
+
+            const activeSection = document.getElementById(`${tabId}-content`);
+            if (activeSection) activeSection.classList.remove('hidden');
+
+            const activeNav = Array.from(navItems).find(i => i.getAttribute('onclick').includes(tabId));
+            if (activeNav) {
+                activeNav.classList.add('sidebar-item-active');
+                activeNav.classList.remove('text-slate-600');
+                pageTitle.innerText = activeNav.innerText.trim();
+            }
+        }
+
+        function toggleDraftEdit() {
+            const result = document.getElementById('ai-result');
+            const button = document.getElementById('btn-edit-draft');
+
+            if (!result || !button) return;
+            if (result.classList.contains('hidden')) {
+                const notify = document.createElement('div');
+                notify.className = "fixed bottom-10 right-10 bg-slate-800 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3";
+                notify.innerHTML = '<i class="fas fa-circle-info text-amber-300"></i> 请先生成纪要初稿，再进行修改';
+                document.body.appendChild(notify);
+                setTimeout(() => notify.remove(), 2200);
+                return;
+            }
+
+            const isEditing = result.getAttribute('contenteditable') === 'true';
+
+            if (!isEditing) {
+                result.setAttribute('contenteditable', 'true');
+                result.classList.add('draft-editing');
+                button.innerHTML = '<i class="fas fa-floppy-disk mr-2"></i> 保存修改';
+                button.classList.remove('text-blue-600', 'bg-blue-50', 'border-blue-200');
+                button.classList.add('text-emerald-700', 'bg-emerald-50', 'border-emerald-200');
+            } else {
+                result.setAttribute('contenteditable', 'false');
+                result.classList.remove('draft-editing');
+                button.innerHTML = '<i class="fas fa-pen-to-square mr-2"></i> 修改稿子';
+                button.classList.add('text-blue-600', 'bg-blue-50', 'border-blue-200');
+                button.classList.remove('text-emerald-700', 'bg-emerald-50', 'border-emerald-200');
+
+                const notify = document.createElement('div');
+                notify.className = "fixed bottom-10 right-10 bg-slate-800 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3";
+                notify.innerHTML = '<i class="fas fa-pen text-blue-300"></i> 纪要修改稿已保存到当前页面';
+                document.body.appendChild(notify);
+                setTimeout(() => notify.remove(), 2200);
+            }
+        }
+
+        function updateHandoverSelection() {
+            const selectedModeBtn = document.querySelector('.handover-mode-btn.border-blue-500');
+            const taskType = document.getElementById('task-type');
+            const modeText = selectedModeBtn ? selectedModeBtn.dataset.mode : '团体交接班';
+            const taskText = taskType ? taskType.value : '日常交接班';
+            const modeTag = document.getElementById('selected-mode-tag');
+            const taskTag = document.getElementById('selected-task-tag');
+            const taskPreview = document.getElementById('task-type-preview');
+
+            if (modeTag) modeTag.innerText = `模式：${modeText}`;
+            if (taskTag) taskTag.innerText = `任务：${taskText}`;
+            if (taskPreview) taskPreview.innerText = `当前任务：${taskText}`;
+        }
+
+        function setupHandoverModule() {
+            const modeButtons = document.querySelectorAll('.handover-mode-btn');
+            const taskType = document.getElementById('task-type');
+
+            modeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    modeButtons.forEach(item => {
+                        item.classList.remove('border-blue-500', 'bg-blue-50');
+                        item.classList.add('border-slate-200');
+                        const label = item.querySelector('span');
+                        const icon = item.querySelector('i');
+                        if (label) {
+                            label.classList.remove('text-blue-700');
+                            label.classList.add('text-slate-700');
+                        }
+                        if (icon) {
+                            icon.classList.remove('text-blue-500');
+                            icon.classList.add('text-slate-400');
+                        }
+                    });
+
+                    button.classList.add('border-blue-500', 'bg-blue-50');
+                    button.classList.remove('border-slate-200');
+                    const activeLabel = button.querySelector('span');
+                    const activeIcon = button.querySelector('i');
+                    if (activeLabel) {
+                        activeLabel.classList.add('text-blue-700');
+                        activeLabel.classList.remove('text-slate-700');
+                    }
+                    if (activeIcon) {
+                        activeIcon.classList.add('text-blue-500');
+                        activeIcon.classList.remove('text-slate-400');
+                    }
+
+                    updateHandoverSelection();
+                });
+            });
+
+            if (taskType) {
+                taskType.addEventListener('change', updateHandoverSelection);
+            }
+
+            updateHandoverSelection();
+        }
+
+        const logCases = [
+            {
+                id: 'JJB-20260318-018',
+                date: '2026-03-18',
+                type: '交班清单',
+                status: '进行中',
+                statusClass: 'text-blue-600',
+                pillClass: 'text-blue-600 bg-white border border-blue-100',
+                cardClass: 'border-blue-200 bg-blue-50',
+                dept: '炼油一部',
+                unit: '3#加氢裂化',
+                team: '炼油一部三班',
+                role: '值班长',
+                title: '炼油一部 / 3#加氢裂化 / 三班早班交接',
+                time: '06:50-07:15',
+                summary: '装置运行平稳，P-201A出口压力波动需重点观察，联锁测试配合事项已记录。',
+                handoverPeople: '陈工、张强、王波',
+                takeoverPeople: '李班长、赵磊',
+                confirmTime: '2026-03-18 07:18',
+                audio: '早班交接_20260318.wav',
+                tags: ['交班人：陈工', '接班人：李班长', 'AI初稿已生成'],
+                tableRows: [
+                    ['装置运行情况', '3#加氢裂化装置总体平稳，反应温度和循环氢压在控制范围内。'],
+                    ['重点巡检情况', '夜班已完成P-201A、E-102、火炬系统巡检，P-201A压力波动需持续观察。'],
+                    ['异常事项', '调节阀反馈滞后，已通知仪表组下午处理。'],
+                    ['待处理事项', '配合10:00联锁手动测试，跟进维修工单审批状态。'],
+                    ['重点提醒', '加强回流压力监测频次，关注异常波动是否扩大。']
+                ],
+                takeoverNote: '接班人员已对巡检结果进行补充确认，并新增“联锁测试前先核对隔离阀状态”的说明，所有修订均已留痕。',
+                confirmNote: '最终确认页集中展示交班人与接班人、重点提醒事项、表格内容和关键补充文字，支持正式确认前快速复核。',
+                dutyNote: '当前日志已同步至运行部值班日志草稿，自动带入本班次生产运行情况、重点协调事项、遗留事项和后续关注事项。',
+                flowLogs: ['07:20 李建国 查看日志详情', '07:22 系统推送至运行部值班日志', '07:30 调度端接收重点事项提醒', '07:35 AI提取 2 项督办任务待审批']
+            },
+            {
+                id: 'JJB-20260318-024',
+                date: '2026-03-18',
+                type: '接班清单',
+                status: '待确认',
+                statusClass: 'text-emerald-600',
+                pillClass: 'text-emerald-600 bg-emerald-50',
+                cardClass: 'border-emerald-200 bg-emerald-50/50',
+                dept: '公用工程部',
+                unit: '公用工程',
+                team: '公用工程一班',
+                role: '外操',
+                title: '公用工程部 / 循环水系统 / 白班接班确认',
+                time: '08:10-08:25',
+                summary: '接班人员已补充循环水泵巡检结果，并修订药剂补加说明。',
+                handoverPeople: '黄工、周文',
+                takeoverPeople: '刘强、彭飞',
+                confirmTime: '2026-03-18 08:26',
+                audio: '循环水交接_20260318.wav',
+                tags: ['循环水泵', '药剂补加', '待班长确认'],
+                tableRows: [
+                    ['装置运行情况', '循环水系统压力稳定，补水量正常。'],
+                    ['重点巡检情况', '2#循环水泵振动值恢复正常，补药系统运行正常。'],
+                    ['异常事项', '冷却塔风机3号存在轻微异响，已登记。'],
+                    ['待处理事项', '白班安排复核风机轴承温度并补填点检记录。'],
+                    ['重点提醒', '14:00前完成药剂库存复盘。']
+                ],
+                takeoverNote: '接班人员已补充现场照片与药剂流量记录，待班长确认后归档。',
+                confirmNote: '确认页需核对风机异响记录与补药时间，避免遗漏后续跟踪。',
+                dutyNote: '该条日志将同步至公用工程部值班日志，用于汇总当班公辅系统状态。',
+                flowLogs: ['08:27 刘强 提交接班补充', '08:30 系统提醒班长确认', '08:42 维修工单自动关联']
+            },
+            {
+                id: 'ZBRZ-20260318-006',
+                date: '2026-03-18',
+                type: '值班日志',
+                status: '已归档',
+                statusClass: 'text-purple-600',
+                pillClass: 'text-purple-600 bg-purple-50',
+                cardClass: 'border-purple-200 bg-purple-50/60',
+                dept: '炼油一部',
+                unit: '3#加氢裂化',
+                team: '炼油一部四班',
+                role: '工艺工程师',
+                title: '炼油一部运行部值班日志',
+                time: '09:00-09:20',
+                summary: '记录本班次生产运行情况、重点协调事项、遗留事项和后续关注清单。',
+                handoverPeople: '李建国',
+                takeoverPeople: '运行部调度组',
+                confirmTime: '2026-03-18 09:25',
+                audio: '无音频附件',
+                tags: ['管理日志', '运行协调', '已归档'],
+                tableRows: [
+                    ['本班运行情况', '主要装置运行平稳，汽柴油出厂计划按节点推进。'],
+                    ['重大事项', '上午联锁测试已纳入重点协调事项。'],
+                    ['重点协调事项', '协调仪表组、工艺组和班组共同参与测试。'],
+                    ['遗留事项', 'P-201A调节阀检修安排待确认。'],
+                    ['后续关注事项', '关注下午测试结果与夜班交接准备。']
+                ],
+                takeoverNote: '该日志为管理层值班记录，不涉及接班修订。',
+                confirmNote: '归档前已完成浏览与流转确认，可供后续复盘查询。',
+                dutyNote: '已沉淀至运行部值班日志库，支持浏览记录和流转记录查询。',
+                flowLogs: ['09:26 调度室查看日志', '09:30 运行部主任完成批注', '09:45 归档入库']
+            },
+            {
+                id: 'JJB-20260317-041',
+                date: '2026-03-17',
+                type: '确认清单',
+                status: '待发布',
+                statusClass: 'text-amber-600',
+                pillClass: 'text-amber-600 bg-amber-50',
+                cardClass: 'border-amber-200 bg-amber-50/60',
+                dept: '炼油二部',
+                unit: '2#催化装置',
+                team: '炼油二部二班',
+                role: '班长',
+                title: '炼油二部 / 2#催化装置 / 夜班确认清单',
+                time: '19:20-19:45',
+                summary: '重点核对再生器温度波动、烟机巡检情况和待处理联锁旁路事项。',
+                handoverPeople: '谭班长、魏明',
+                takeoverPeople: '周班长、杜鹏',
+                confirmTime: '2026-03-17 19:46',
+                audio: '催化夜班交接_20260317.mp3',
+                tags: ['再生器温度', '联锁旁路', '待发布'],
+                tableRows: [
+                    ['装置运行情况', '2#催化装置负荷稳定，再生器温度有小幅波动。'],
+                    ['重点巡检情况', '烟机轴承温度正常，主风机电流偏高已观察。'],
+                    ['异常事项', '联锁旁路票据待白班确认注销。'],
+                    ['待处理事项', '次日8:30前复核旁路状态与台账。'],
+                    ['重点提醒', '严禁旁路状态遗漏交接。']
+                ],
+                takeoverNote: '接班班长已补充旁路票编号和现场确认人信息。',
+                confirmNote: '发布前需由运行部值班人员完成最后审核。',
+                dutyNote: '确认后将同步到运行部重要事项汇总。',
+                flowLogs: ['19:47 周班长 补充旁路票编号', '19:50 运行部待审核', '20:10 系统生成风险提醒']
+            },
+            {
+                id: 'JJB-20260316-011',
+                date: '2026-03-16',
+                type: '交班清单',
+                status: '已归档',
+                statusClass: 'text-slate-600',
+                pillClass: 'text-slate-600 bg-slate-100',
+                cardClass: 'border-slate-200 bg-white',
+                dept: '储运部',
+                unit: '常减压装置',
+                team: '炼油一部四班',
+                role: '内操',
+                title: '储运部 / 常减压装置 / 成品罐区交班',
+                time: '15:10-15:30',
+                summary: '完成成品罐区液位核对、鹤位排队信息交接和夜间装车提醒。',
+                handoverPeople: '孙涛、李盛',
+                takeoverPeople: '高洋',
+                confirmTime: '2026-03-16 15:32',
+                audio: '成品罐区交接_20260316.wav',
+                tags: ['液位核对', '鹤位排队', '夜间装车'],
+                tableRows: [
+                    ['装置运行情况', '成品罐区运行正常，液位均处于安全范围。'],
+                    ['重点巡检情况', '4个鹤位现场照明完好，静电接地正常。'],
+                    ['异常事项', '3号鹤位排队时间较长，需协调调度。'],
+                    ['待处理事项', '夜班提前通知运输单位按顺序装车。'],
+                    ['重点提醒', '重点关注柴油罐区液位变化。']
+                ],
+                takeoverNote: '接班人已确认罐区液位与装车计划一致。',
+                confirmNote: '该记录已形成正式日志，可用于后续装卸车复盘。',
+                dutyNote: '相关重要事项已输出至数据资源中心。',
+                flowLogs: ['15:40 调度端查看排队情况', '15:45 系统完成归档']
+            },
+            {
+                id: 'JJB-20260318-031',
+                date: '2026-03-18',
+                type: '交班清单',
+                status: '待补充',
+                statusClass: 'text-rose-600',
+                pillClass: 'text-rose-600 bg-rose-50',
+                cardClass: 'border-rose-200 bg-rose-50/60',
+                dept: '公用工程部',
+                unit: '硫磺回收',
+                team: '硫磺回收夜班',
+                role: '外操',
+                title: '公用工程部 / 硫磺回收 / 夜班交班待补充',
+                time: '07:05-07:18',
+                summary: '尾气温度记录缺少一个采样点，交班内容已提交但需补录。',
+                handoverPeople: '梁工',
+                takeoverPeople: '何工',
+                confirmTime: '2026-03-18 07:20',
+                audio: '硫磺回收_20260318.wav',
+                tags: ['尾气温度', '待补录', '系统提醒'],
+                tableRows: [
+                    ['装置运行情况', '硫磺回收系统平稳，尾气指标正常。'],
+                    ['重点巡检情况', '酸性气管线无异常，焚烧炉火焰稳定。'],
+                    ['异常事项', '06:40尾气温度记录缺失。'],
+                    ['待处理事项', '补录缺失采样点并上传截图。'],
+                    ['重点提醒', '8:30前完成补录，避免影响日报统计。']
+                ],
+                takeoverNote: '接班人已确认现场稳定，但要求补齐采样记录。',
+                confirmNote: '确认前需补齐监测截图附件。',
+                dutyNote: '若超时未补齐，系统将自动推送督办。',
+                flowLogs: ['07:21 系统发送补录提醒', '07:25 何工查看日志', '07:40 待上传截图']
+            }
+        ];
+
+        let filteredLogCases = [];
+        let activeLogCaseId = null;
+
+        function normalizeTypeFilter(value) {
+            return value === '日志类型：全部' ? '全部' : value;
+        }
+
+        function getLogFilters() {
+            return {
+                date: document.getElementById('log-filter-date')?.value || '',
+                unit: document.getElementById('log-filter-unit')?.value || '全部装置',
+                team: document.getElementById('log-filter-team')?.value || '全部班组',
+                role: document.getElementById('log-filter-role')?.value || '全部岗位',
+                dept: document.getElementById('log-filter-dept')?.value || '全部运行部',
+                type: normalizeTypeFilter(document.getElementById('log-filter-type')?.value || '日志类型：全部')
+            };
+        }
+
+        function matchesFilter(item, filters) {
+            return (!filters.date || item.date === filters.date)
+                && (filters.unit === '全部装置' || item.unit === filters.unit)
+                && (filters.team === '全部班组' || item.team === filters.team)
+                && (filters.role === '全部岗位' || item.role === filters.role)
+                && (filters.dept === '全部运行部' || item.dept === filters.dept)
+                && (filters.type === '全部' || item.type === filters.type);
+        }
+
+        function renderLogCases() {
+            const list = document.getElementById('log-cases-list');
+            const count = document.getElementById('log-results-count');
+            if (!list || !count) return;
+
+            const filters = getLogFilters();
+            filteredLogCases = logCases.filter(item => matchesFilter(item, filters));
+            count.innerText = `共 ${filteredLogCases.length} 条案例`;
+
+            if (!filteredLogCases.length) {
+                activeLogCaseId = null;
+                list.innerHTML = '<div class="rounded-2xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-400">当前筛选条件下暂无案例，请调整上方查询条件。</div>';
+                renderLogDetail(null);
+                return;
+            }
+
+            if (!filteredLogCases.some(item => item.id === activeLogCaseId)) {
+                activeLogCaseId = filteredLogCases[0].id;
+            }
+
+            list.innerHTML = filteredLogCases.map(item => {
+                const isActive = item.id === activeLogCaseId;
+                const activeClass = isActive ? item.cardClass : 'border-slate-200 bg-white hover:border-slate-300';
+                const tagHtml = item.tags.map(tag => `<span class="px-3 py-1 bg-white rounded-full border border-slate-100">${tag}</span>`).join('');
+                return `
+                    <button type="button" onclick="selectLogCase('${item.id}')" class="w-full text-left border rounded-2xl p-5 transition-all ${activeClass}">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="text-[10px] font-bold px-2 py-1 rounded-full ${item.pillClass}">${item.type}</span>
+                                    <span class="text-[10px] text-slate-400">${item.time}</span>
+                                </div>
+                                <h5 class="text-sm font-bold text-slate-800">${item.title}</h5>
+                                <p class="mt-2 text-xs text-slate-500 leading-relaxed">${item.summary}</p>
+                            </div>
+                            <span class="text-xs font-bold ${item.statusClass}">${item.status}</span>
+                        </div>
+                        <div class="mt-4 flex flex-wrap gap-2 text-[11px] text-slate-500">${tagHtml}</div>
+                    </button>
+                `;
+            }).join('');
+
+            renderLogDetail(filteredLogCases.find(item => item.id === activeLogCaseId));
+        }
+
+        function renderLogDetail(item) {
+            const panel = document.getElementById('log-detail-panel');
+            if (!panel) return;
+
+            if (!item) {
+                panel.innerHTML = '<div class="rounded-2xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-400">请选择左侧案例查看详情。</div>';
+                return;
+            }
+
+            const rows = item.tableRows.map(([field, value]) => `
+                <tr>
+                    <td class="px-4 py-3 text-slate-500">${field}</td>
+                    <td class="px-4 py-3 text-slate-700">${value}</td>
+                </tr>
+            `).join('');
+            const flowLogs = item.flowLogs.map(log => `<p>${log}</p>`).join('');
+
+            panel.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">基础信息</p>
+                        <p class="text-sm font-semibold text-slate-800">交接班日志编号：${item.id}</p>
+                        <p class="mt-2 text-xs text-slate-500">运行部：${item.dept}</p>
+                        <p class="mt-1 text-xs text-slate-500">装置：${item.unit}</p>
+                        <p class="mt-1 text-xs text-slate-500">班组 / 岗位：${item.team} / ${item.role}</p>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">参与与确认</p>
+                        <p class="text-xs text-slate-500">交班参与人：${item.handoverPeople}</p>
+                        <p class="mt-1 text-xs text-slate-500">接班参与人：${item.takeoverPeople}</p>
+                        <p class="mt-1 text-xs text-slate-500">确认时间：${item.confirmTime}</p>
+                        <p class="mt-1 text-xs text-slate-500">音频附件：${item.audio}</p>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">${item.type}</p>
+                    <div class="rounded-2xl border border-slate-200 overflow-hidden">
+                        <table class="w-full text-sm">
+                            <thead class="bg-slate-50 text-slate-500">
+                                <tr>
+                                    <th class="text-left px-4 py-3 font-semibold">字段</th>
+                                    <th class="text-left px-4 py-3 font-semibold">内容</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">${rows}</tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div class="p-5 bg-emerald-50 rounded-2xl border border-emerald-100">
+                        <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-3">接班清单</p>
+                        <p class="text-sm text-slate-700 leading-relaxed">${item.takeoverNote}</p>
+                    </div>
+                    <div class="p-5 bg-amber-50 rounded-2xl border border-amber-100">
+                        <p class="text-[10px] font-bold text-amber-600 uppercase tracking-widest mb-3">确认清单</p>
+                        <p class="text-sm text-slate-700 leading-relaxed">${item.confirmNote}</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div class="p-5 bg-purple-50 rounded-2xl border border-purple-100">
+                        <p class="text-[10px] font-bold text-purple-600 uppercase tracking-widest mb-3">值班日志贯通</p>
+                        <p class="text-sm text-slate-700 leading-relaxed">${item.dutyNote}</p>
+                    </div>
+                    <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">浏览与流转记录</p>
+                        <div class="space-y-2 text-sm text-slate-600">${flowLogs}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectLogCase(id) {
+            activeLogCaseId = id;
+            renderLogCases();
+        }
+
+        function setupLogQueryCenter() {
+            ['log-filter-date', 'log-filter-unit', 'log-filter-team', 'log-filter-role', 'log-filter-dept', 'log-filter-type'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('change', renderLogCases);
+            });
+            renderLogCases();
+        }
+
+        function toggleRecording() {
+            const button = document.getElementById('start-recording-btn');
+            const status = document.getElementById('recording-status');
+            const indicator = document.getElementById('recording-indicator');
+            const indicatorText = document.getElementById('recording-indicator-text');
+            const mode = document.getElementById('selected-mode-tag').innerText.replace('模式：', '');
+            const task = document.getElementById('selected-task-tag').innerText.replace('任务：', '');
+            const isRecording = button.dataset.recording === 'true';
+
+            if (!isRecording) {
+                button.dataset.recording = 'true';
+                button.classList.remove('bg-red-500', 'hover:bg-red-600');
+                button.classList.add('bg-emerald-500', 'hover:bg-emerald-600');
+                button.innerHTML = '<i class="fas fa-stop-circle mr-2"></i> 录音中，点击结束';
+                status.innerText = `正在录音：${mode} / ${task}。系统已开始采集本次交接班语音内容。`;
+                indicator.classList.remove('bg-slate-300');
+                indicator.classList.add('bg-red-500', 'recording-pulse');
+                indicatorText.innerText = '录音中';
+            } else {
+                button.dataset.recording = 'false';
+                button.classList.add('bg-red-500', 'hover:bg-red-600');
+                button.classList.remove('bg-emerald-500', 'hover:bg-emerald-600');
+                button.innerHTML = '<i class="fas fa-microphone mr-2"></i> 开始交接班';
+                status.innerText = `录音已结束：${mode} / ${task}。本次交接班录音已完成，可进入后续识别与整理流程。`;
+                indicator.classList.add('bg-slate-300');
+                indicator.classList.remove('bg-red-500', 'recording-pulse');
+                indicatorText.innerText = '已结束';
+            }
+        }
+
+        // 模拟AI生成过程
+        function simulateAI() {
+            const placeholder = document.getElementById('ai-placeholder');
+            const loading = document.getElementById('ai-loading');
+            const result = document.getElementById('ai-result');
+            const btn = document.getElementById('btn-generate');
+
+            placeholder.classList.add('hidden');
+            loading.classList.remove('hidden');
+            result.classList.add('hidden');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> 正在处理中...';
+
+            setTimeout(() => {
+                loading.classList.add('hidden');
+                result.classList.remove('hidden');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-wand-magic-sparkles mr-2"></i> 重新生成';
+                
+                // 模拟一个轻微的成功反馈
+                const notify = document.createElement('div');
+                notify.className = "fixed bottom-10 right-10 bg-slate-800 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-bounce";
+                notify.innerHTML = '<i class="fas fa-check-circle text-emerald-400"></i> AI 已成功提炼 2 项待办任务';
+                document.body.appendChild(notify);
+                setTimeout(() => notify.remove(), 3000);
+
+            }, 2500);
+        }
+
+        // 默认显示仪表盘
+        window.onload = () => {
+            setupHandoverModule();
+            setupLogQueryCenter();
+            switchTab('dashboard');
+        };
+    </script>
+</body>
+</html>
+    
