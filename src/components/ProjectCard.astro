@@ -1,158 +1,200 @@
 ---
-/**
- * ProjectCard Component
- * 
- * Displays a project or case study entry in a card format with role, year, outcome summary,
- * and technology stack. Extends BaseCard component with project-specific features including
- * an optional featured badge, status indicator, and automatic tech stack truncation.
- * 
- * @component
- * 
- * @example
- * ```astro
- * <ProjectCard
- *   title="E-commerce Platform Redesign"
- *   slug="ecommerce-redesign"
- *   outcomeSummary="Increased conversion rate by 45% and reduced cart abandonment"
- *   role="Lead Frontend Developer"
- *   year={2024}
- *   techStack={['React', 'TypeScript', 'Next.js', 'Tailwind CSS', 'Stripe']}
- *   featured={true}
- *   status="completed"
- * />
- * ```
- */
-
 import BaseCard from './BaseCard.astro';
 import ForwardLink from './ForwardLink.astro';
 
 interface Props {
-  /** Project title (displayed as card heading) */
   title: string;
-  
-  /** URL slug for the project (used to generate /projects/{slug} link) */
   slug: string;
-  
-  /** Brief summary of project outcomes or impact */
   outcomeSummary: string;
-  
-  /** Your role in the project (e.g., "Lead Developer", "Technical Architect") */
   role: string;
-  
-  /** Year the project was completed */
   year: number;
-  
-  /** Optional array of technologies used (displays max 4, shows "+N" for remaining) */
   techStack?: string[];
-  
-  /** Whether to display the featured badge (default: false) */
   featured?: boolean;
-  
-  /** Project status (default: 'completed') */
   status?: 'completed' | 'ongoing' | 'archived';
+  signals?: string[];
+  tone?: 'yellow' | 'blue' | 'pink' | 'green';
 }
 
-const { title, slug, outcomeSummary, role, year, techStack = [], featured = false, status = 'completed' } = Astro.props;
+const {
+  title,
+  slug,
+  outcomeSummary,
+  role,
+  year,
+  techStack = [],
+  featured = false,
+  status = 'completed',
+  signals = [],
+  tone = 'yellow',
+} = Astro.props;
 
-// Show max 4 tech tags to keep card clean and consistent
 const displayTech = techStack.slice(0, 4);
-const hasMoreTech = techStack.length > 4;
 
-// Status display configuration
 const statusConfig = {
-  completed: { label: 'Completed', class: 'status--completed' },
-  ongoing: { label: 'Ongoing', class: 'status--ongoing' },
-  archived: { label: 'Archived', class: 'status--archived' },
+  completed: { label: '已完成', class: 'status--completed' },
+  ongoing: { label: '进行中', class: 'status--ongoing' },
+  archived: { label: '已归档', class: 'status--archived' },
 };
+
 const statusInfo = statusConfig[status];
 ---
 
-<BaseCard href={`/projects/${slug}`} class="project-card">
-  <div slot="badge" class="card-badges">
-    {featured && (
-      <span class="featured-badge">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-        </svg>
-        Featured
-      </span>
-    )}
-    {status !== 'completed' && (
-      <span class:list={['status-badge', statusInfo.class]}>
-        {statusInfo.label}
-      </span>
+<BaseCard href={`/projects/${slug}`} class={`project-card project-card--${tone}`}>
+  <div slot="badge" class="card-top">
+    <div class="card-top__badges">
+      {featured && <span class="featured-badge">重点项目</span>}
+      <span class:list={['status-badge', statusInfo.class]}>{statusInfo.label}</span>
+    </div>
+
+    {signals.length > 0 && (
+      <div class="card-top__signals">
+        {signals.map((signal) => (
+          <span class="signal-badge">{signal}</span>
+        ))}
+      </div>
     )}
   </div>
-  
+
   <Fragment slot="meta">{role} · {year}</Fragment>
   <Fragment slot="title">{title}</Fragment>
   <Fragment slot="description">{outcomeSummary}</Fragment>
-  
+
   {displayTech.length > 0 && (
     <div slot="tags" class="tags-list">
       {displayTech.map((tech) => (
         <span class="tag">{tech}</span>
       ))}
-      {hasMoreTech && (
-        <span class="tag-more">+{techStack.length - 4}</span>
-      )}
     </div>
   )}
-  
-  <ForwardLink text="View case study" />
+
+  <ForwardLink text="查看项目案例" variant="muted" />
 </BaseCard>
 
 <style>
-  .card-badges {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.75rem;
+  .project-card {
+    height: 100%;
+    border-width: 2px;
+    border-radius: 1.5rem;
+    background: var(--color-bg-elevated);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
   }
 
-  .card-badges:empty {
-    display: none;
+  .project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .project-card--yellow {
+    background: linear-gradient(180deg, rgba(244, 213, 106, 0.22) 0%, var(--color-bg-elevated) 34%);
+  }
+
+  .project-card--blue {
+    background: linear-gradient(180deg, rgba(188, 215, 255, 0.24) 0%, var(--color-bg-elevated) 34%);
+  }
+
+  .project-card--pink {
+    background: linear-gradient(180deg, rgba(246, 191, 211, 0.24) 0%, var(--color-bg-elevated) 34%);
+  }
+
+  .project-card--green {
+    background: linear-gradient(180deg, rgba(205, 235, 199, 0.24) 0%, var(--color-bg-elevated) 34%);
+  }
+
+  .card-top {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .card-top__badges,
+  .card-top__signals,
+  .tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .featured-badge,
+  .status-badge,
+  .signal-badge,
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 30px;
+    padding: 0.3rem 0.7rem;
+    border: 2px solid var(--color-border);
+    border-radius: var(--border-radius-pill);
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-text);
   }
 
   .featured-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.375rem;
-    font-size: 0.6875rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--color-accent);
-  }
-
-  .featured-badge svg {
-    flex-shrink: 0;
+    background: var(--color-tag-yellow);
   }
 
   .status-badge {
-    display: inline-flex;
-    align-items: center;
-    font-size: 0.625rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.7);
+  }
+
+  .status--completed {
+    background: var(--color-tag-green);
   }
 
   .status--ongoing {
-    background: rgba(34, 197, 94, 0.15);
-    color: #22c55e;
+    background: var(--color-tag-blue);
   }
 
   .status--archived {
-    background: rgba(115, 115, 115, 0.15);
+    background: rgba(255, 255, 255, 0.7);
     color: var(--color-text-muted);
   }
 
-  .tag-more {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-    color: var(--color-text-muted);
+  .signal-badge {
+    background: rgba(255, 255, 255, 0.88);
+  }
+
+  .tag {
+    background: rgba(255, 255, 255, 0.78);
+    font-weight: 600;
+  }
+
+  .project-card :global(.card-meta) {
+    margin-bottom: 0.7rem;
+    font-size: 0.78rem;
+    color: var(--color-text-secondary);
+  }
+
+  .project-card :global(.card-title) {
+    margin-bottom: 0.7rem;
+    font-size: 1.45rem;
+    line-height: 1.08;
+    font-weight: 800;
+  }
+
+  .project-card :global(.card-description) {
+    margin-bottom: 1rem;
+    font-size: 0.98rem;
+    line-height: 1.65;
+    color: var(--color-text-secondary);
+  }
+
+  .project-card :global(.arrow-link) {
+    margin-top: 1.2rem;
+    font-weight: 800;
+  }
+
+  @media (max-width: 640px) {
+    .project-card :global(.card-title) {
+      font-size: 1.2rem;
+    }
+
+    .project-card :global(.card-description) {
+      font-size: 0.92rem;
+    }
   }
 </style>
