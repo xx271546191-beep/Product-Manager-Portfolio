@@ -31,7 +31,7 @@ import { siteConfig } from '../config';
             {siteConfig.author.name}
           </h1>
           <p class="hero-sub">
-            湖南农业大学硕士在读（2027年毕业） · 企业知识库与行业智能化场景
+            湖南农业大学硕士在读（2024—2027） · 企业知识库与行业智能化场景
           </p>
           <p class="hero-desc">
             面向企业知识库与行业智能化场景，具备从需求调研、PRD/原型设计、测试评估、Bad Case 收敛到方案交付支持的完整项目经验。
@@ -60,19 +60,31 @@ import { siteConfig } from '../config';
             <span class="project-role">AI产品经理（实习） · 2026</span>
             <h3 class="project-title">筑云智库知识平台</h3>
             <p class="project-desc">参与某省电信数据中心知识平台从 Demo 验证推进到立项评估，围绕引用溯源、图文回答与 PDF 预览定位等能力做设计与测试收敛。</p>
-            <a href="/projects" class="project-link">了解更多 →</a>
+            <a href="/projects/zhuyun-knowledge-platform" class="project-link">了解更多 →</a>
           </div>
         </div>
 
         <div class="project-card">
           <div class="project-image">
-            <img src="/AI运维智脑.png" alt="AI运维智脑" class="project-img" />
+            <div class="project-image-placeholder">茂名石化电子操作票 AI 应用</div>
           </div>
           <div class="project-info">
             <span class="project-role">AI产品经理（实习） · 2026</span>
-            <h3 class="project-title">AI运维智脑首页</h3>
-            <p class="project-desc">独立输出知识平台方案页，把知识库、数字孪生、物联网感知等模块可视化，支撑客户更快理解整体蓝图与能力边界。</p>
-            <a href="/projects" class="project-link">了解更多 →</a>
+            <h3 class="project-title">茂名石化电子操作票 AI 应用</h3>
+            <p class="project-desc">基于既有系统做二期升级，访谈 6 个部门、梳理 33 项需求，独立完成可行性报告与系统原型，规划 AI 审核、唱票识别、DCS 联动与全流程风控机制。</p>
+            <a href="/projects/maoming-operation-ticket-ai" class="project-link">了解更多 →</a>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-image">
+            <div class="project-image-placeholder">RouteRAG / MyOCR</div>
+          </div>
+          <div class="project-info">
+            <span class="project-role">个人预研项目 · 2026</span>
+            <h3 class="project-title">RouteRAG</h3>
+            <p class="project-desc">围绕复杂光缆路由图场景设计多模态 RAG Demo，完成 PRD、三层架构、固定 schema 与检索 / 抽取 / 展示链路设计，当前推进 MVP 骨架验证。</p>
+            <a href="/projects/route-rag" class="project-link">了解更多 →</a>
           </div>
         </div>
       </div>
@@ -113,7 +125,7 @@ import { siteConfig } from '../config';
           <p class="experience-desc">参与电信、石化、煤矿、政务等 ToB / ToG 场景 AI 产品项目，覆盖需求调研、原型设计、测试推进、方案汇报与客户演示支持。</p>
         </div>
         <div class="experience-item">
-          <span class="experience-year">2022—2027</span>
+          <span class="experience-year">2024—2027</span>
           <h3 class="experience-title">湖南农业大学 · 农学硕士在读</h3>
           <p class="experience-desc">预计 2027 年毕业，持续补齐产品经理、AI 应用与知识库/RAG 方向的实践能力。</p>
         </div>
@@ -241,7 +253,7 @@ import { siteConfig } from '../config';
 
     .project-grid {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 2rem;
     }
 
