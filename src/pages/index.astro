@@ -14,7 +14,7 @@ const quickFacts = [
     tone: 'yellow',
   },
   {
-    value: 'ToB / ToG',
+    value: 'ToB & ToG',
     label: '场景跨度',
     detail: '从电信数据中心到工业流程，再到政务与行业解决方案。',
     tone: 'blue',
@@ -95,7 +95,7 @@ const timeline = [
   {
     period: '2025.12 — 2026.03',
     title: '广州浩传科技 · AI产品经理（实习）',
-    description: '参与电信、石化、煤矿、政务等 ToB / ToG 场景 AI 产品项目，覆盖需求调研、原型设计、测试推进、方案汇报与客户演示支持。',
+    description: '参与电信、石化、煤矿、政务等 ToB & ToG 场景 AI 产品项目，覆盖需求调研、原型设计、测试推进、方案汇报与客户演示支持。',
   },
   {
     period: '2024 — 2027',
@@ -128,9 +128,12 @@ const timeline = [
 
         <p class="hero-kicker">你好，我是 {siteConfig.author.name}</p>
         <h1 class="hero-title">
-          把 <span class="hero-highlight hero-highlight--yellow">AI 能力</span>
-          变成能落地的
-          <span class="hero-highlight hero-highlight--blue">产品方案</span>
+          <span class="hero-title__line">
+            把 <span class="hero-highlight hero-highlight--yellow">AI 能力</span> 变成
+          </span>
+          <span class="hero-title__line">
+            能落地的 <span class="hero-highlight hero-highlight--yellow">产品方案</span>
+          </span>
         </h1>
         <p class="hero-summary">
           湖南农业大学硕士在读（2024—2027），聚焦企业知识库、RAG 与行业智能化场景，
@@ -149,7 +152,7 @@ const timeline = [
         </ul>
       </div>
 
-      <div class="hero-visual" aria-hidden="true">
+      <div class="hero-visual">
         <div class="identity-card">
           <span class="identity-sticker identity-sticker--pink">求职中</span>
           <span class="identity-sticker identity-sticker--blue">Portfolio</span>
@@ -158,12 +161,8 @@ const timeline = [
             <div class="illustration-orb illustration-orb--yellow"></div>
             <div class="illustration-orb illustration-orb--blue"></div>
             <div class="illustration-orb illustration-orb--pink"></div>
-
-            <div class="illustration-figure">
-              <span class="figure-head"></span>
-              <span class="figure-body"></span>
-              <span class="figure-laptop"></span>
-              <span class="figure-desk"></span>
+            <div class="photo-frame">
+              <img src="/证件照.png" alt={`${siteConfig.author.name}个人照片`} class="profile-photo" />
             </div>
           </div>
 
@@ -195,9 +194,9 @@ const timeline = [
     </section>
 
     <section class="section-block">
-      <div class="section-head">
-        <span class="section-pill">代表项目</span>
-        <h2 class="section-title">不是堆列表，而是先看最能代表能力的 3 个项目</h2>
+      <div class="section-head section-head--center">
+        <span class="section-pill">先看项目</span>
+        <h2 class="section-title section-title--center">先看 3 个最能说明我能力的项目</h2>
       </div>
 
       <div class="project-grid">
@@ -366,18 +365,24 @@ const timeline = [
     .hero-kicker {
       margin-top: 1.25rem;
       margin-bottom: 0.8rem;
-      font-size: 1rem;
-      font-weight: 700;
+      font-size: clamp(1.5rem, 2vw, 2rem);
+      line-height: 1.08;
+      font-weight: 800;
       color: var(--color-text-secondary);
     }
 
     .hero-title {
-      max-width: 12ch;
-      font-size: clamp(2.9rem, 6vw, 5.4rem);
+      max-width: 11.5ch;
+      font-size: clamp(2.8rem, 5.4vw, 5rem);
       line-height: 0.98;
       letter-spacing: -0.05em;
       font-weight: 800;
       margin-bottom: 1.2rem;
+    }
+
+    .hero-title__line {
+      display: block;
+      white-space: nowrap;
     }
 
     .hero-highlight {
@@ -390,10 +395,6 @@ const timeline = [
 
     .hero-highlight--yellow {
       background: var(--color-tag-yellow);
-    }
-
-    .hero-highlight--blue {
-      background: var(--color-tag-blue);
     }
 
     .hero-summary {
@@ -449,9 +450,16 @@ const timeline = [
     }
 
     .hero-tags {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       list-style: none;
       margin: 0;
       padding: 0;
+    }
+
+    .hero-tag {
+      width: 100%;
+      min-height: 52px;
     }
 
     .hero-visual {
@@ -535,59 +543,37 @@ const timeline = [
       background: var(--color-tag-pink);
     }
 
-    .illustration-figure {
+    .photo-frame {
       position: absolute;
-      inset: 0;
-    }
-
-    .figure-head,
-    .figure-body,
-    .figure-laptop,
-    .figure-desk {
-      position: absolute;
-      display: block;
+      inset: 22px 18px 18px;
       border: 2px solid var(--color-border);
-      background: var(--color-bg-elevated);
+      border-radius: 1.2rem;
+      background: rgba(255, 250, 243, 0.88);
+      overflow: hidden;
+      z-index: 1;
     }
 
-    .figure-head {
-      width: 92px;
-      height: 92px;
-      top: 68px;
-      left: 50%;
-      margin-left: -46px;
-      border-radius: 44px 44px 36px 36px;
-      background: #ffd6b7;
+    .profile-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center top;
+      background: #fff7ef;
     }
 
-    .figure-body {
-      width: 182px;
-      height: 116px;
-      left: 50%;
-      bottom: 74px;
-      margin-left: -91px;
-      border-radius: 32px 32px 22px 22px;
-      background: #fff8ef;
+    .section-head--center {
+      text-align: center;
     }
 
-    .figure-laptop {
-      width: 190px;
-      height: 94px;
-      left: 50%;
-      bottom: 58px;
-      margin-left: -95px;
-      border-radius: 1rem;
-      background: var(--color-tag-blue);
-      transform: skew(-10deg);
+    .section-title--center {
+      max-width: 13ch;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    .figure-desk {
-      width: calc(100% - 60px);
-      height: 18px;
-      left: 30px;
-      bottom: 32px;
-      border-radius: var(--border-radius-pill);
-      background: var(--color-border);
+    .section-head--center .section-pill {
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .identity-meta {
@@ -679,6 +665,7 @@ const timeline = [
       flex-direction: column;
       overflow: hidden;
       border: 2px solid var(--color-border);
+      border-radius: 1.35rem;
       border-radius: 1.5rem;
       background: var(--color-bg-elevated);
       box-shadow: var(--shadow-sm);
@@ -858,6 +845,10 @@ const timeline = [
         min-height: 420px;
       }
 
+      .hero-tags {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
       .cta-panel {
         flex-direction: column;
         align-items: flex-start;
@@ -898,18 +889,20 @@ const timeline = [
         font-size: 0.94rem;
       }
 
+      .hero-tags {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hero-kicker {
+        font-size: 1.25rem;
+      }
+
       .illustration {
         height: 260px;
       }
 
-      .figure-body {
-        width: 156px;
-        margin-left: -78px;
-      }
-
-      .figure-laptop {
-        width: 166px;
-        margin-left: -83px;
+      .hero-title__line {
+        white-space: normal;
       }
     }
   </style>
