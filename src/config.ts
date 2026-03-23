@@ -133,7 +133,7 @@ export const siteConfig = {
   nav: [
     { label: '项目作品', href: '/projects' },
     { label: '职业历程', href: '/journey' },
-    { label: '关于我', href: '/contact' },
+    { label: '联系我', href: '/contact' },
   ],
 } as const;
 

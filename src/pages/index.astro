@@ -1,15 +1,112 @@
 ---
-/**
- * 首页
- */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SEO from '../components/SEO.astro';
 import StructuredData from '../components/StructuredData.astro';
 import { siteConfig } from '../config';
+
+const heroTags = ['需求调研', 'PRD / 原型', '测试评估', '知识库 / RAG', '方案汇报'];
+
+const quickFacts = [
+  {
+    value: '6',
+    label: '项目样本',
+    detail: '覆盖知识库、工业、政务、数字人与具身智能。',
+    tone: 'yellow',
+  },
+  {
+    value: 'ToB / ToG',
+    label: '场景跨度',
+    detail: '从电信数据中心到工业流程，再到政务与行业解决方案。',
+    tone: 'blue',
+  },
+  {
+    value: 'PRD + 原型',
+    label: '典型职责',
+    detail: '能独立完成需求梳理、原型设计、测试推进和汇报表达。',
+    tone: 'pink',
+  },
+  {
+    value: 'RAG / AI 应用',
+    label: '核心方向',
+    detail: '关注知识库、行业智能化和可交付的 AI 产品路径。',
+    tone: 'green',
+  },
+];
+
+const featuredProjects = [
+  {
+    title: '筑云智库知识平台',
+    role: 'AI产品经理（实习）',
+    year: '2026',
+    href: '/projects/zhuyun-knowledge-platform',
+    summary: '参与某省电信数据中心知识平台从 Demo 验证推进到立项评估，围绕引用溯源、图文回答与 PDF 预览定位做设计与测试收敛。',
+    impact: '把“能不能做”推进到“值不值得立项”。',
+    kicker: '知识库 / RAG',
+    tone: 'blue',
+    image: '/筑云知识库首页.png',
+    imageAlt: '筑云智库知识平台首页',
+  },
+  {
+    title: '某地石化电子操作票 AI 应用',
+    role: 'AI产品经理（实习）',
+    year: '2026',
+    href: '/projects/local-operation-ticket-ai',
+    summary: '围绕既有系统做二期升级，访谈 6 个部门、梳理 33 项需求，独立完成可行性报告与系统原型。',
+    impact: '把 AI 审核、唱票识别、DCS 联动和全流程风控串成可落地方案。',
+    kicker: '工业流程升级',
+    tone: 'yellow',
+  },
+  {
+    title: 'RouteRAG',
+    role: '个人预研项目',
+    year: '2026',
+    href: '/projects/route-rag',
+    summary: '围绕复杂光缆路由图场景设计多模态 RAG Demo，完成 PRD、三层架构、固定 schema 与检索 / 抽取 / 展示链路设计。',
+    impact: '当前推进 MVP 骨架验证，聚焦“复杂资料如何被稳定读懂”。',
+    kicker: '多模态预研',
+    tone: 'pink',
+  },
+];
+
+const workModes = [
+  {
+    title: '需求拆解',
+    description: '先把业务场景、用户角色和约束条件拆清，再决定产品要解决的真问题。',
+    tone: 'yellow',
+  },
+  {
+    title: '产品规划',
+    description: '把需求转成 PRD、原型、模块边界和迭代优先级，避免方案只停留在概念层。',
+    tone: 'blue',
+  },
+  {
+    title: '跨团队推进',
+    description: '能在客户、研发、测试和内部汇报之间切换表达方式，把项目往前推。',
+    tone: 'pink',
+  },
+  {
+    title: 'AI 应用落地',
+    description: '关注知识库、RAG、智能体与行业场景结合后的真正交付路径，而不是只讲模型能力。',
+    tone: 'green',
+  },
+];
+
+const timeline = [
+  {
+    period: '2025.12 — 2026.03',
+    title: '广州浩传科技 · AI产品经理（实习）',
+    description: '参与电信、石化、煤矿、政务等 ToB / ToG 场景 AI 产品项目，覆盖需求调研、原型设计、测试推进、方案汇报与客户演示支持。',
+  },
+  {
+    period: '2024 — 2027',
+    title: '湖南农业大学 · 农学硕士在读',
+    description: '预计 2027 年毕业，持续补齐产品经理、AI 应用与知识库 / RAG 方向的实践能力。',
+  },
+];
 ---
 
 <BaseLayout>
-  <SEO 
+  <SEO
     slot="head"
     title={`${siteConfig.author.name} - ${siteConfig.author.title}`}
     description={siteConfig.description}
@@ -17,439 +114,802 @@ import { siteConfig } from '../config';
     noSuffix
   />
 
-  <!-- Structured Data for Homepage -->
   <StructuredData type="WebSite" />
   <StructuredData type="Person" />
 
   <main class="home-page">
-    <!-- Hero Section -->
     <section class="hero">
-      <div class="hero-content">
-        <div class="hero-left">
-          <h1 class="hero-title">
-            <span class="hero-label">AI产品经理实习生</span>
-            {siteConfig.author.name}
-          </h1>
-          <p class="hero-sub">
-            湖南农业大学硕士在读（2024—2027） · 企业知识库与行业智能化场景
-          </p>
-          <p class="hero-desc">
-            面向企业知识库与行业智能化场景，具备从需求调研、PRD/原型设计、测试评估、Bad Case 收敛到方案交付支持的完整项目经验。
-          </p>
-          <div class="hero-cta">
-            <a href="/projects" class="btn-primary">查看作品</a>
-            <a href="/contact" class="btn-secondary">联系我</a>
-          </div>
+      <div class="hero-copy">
+        <div class="hero-badges" aria-label="身份标签">
+          <span class="badge badge--blue">AI 产品经理</span>
+          <span class="badge badge--yellow">求职作品集</span>
+          <span class="badge badge--pink">知识库 / RAG</span>
         </div>
-        <div class="hero-right">
-          <img src="/证件照.png" alt={siteConfig.author.name} class="profile-photo" />
+
+        <p class="hero-kicker">你好，我是 {siteConfig.author.name}</p>
+        <h1 class="hero-title">
+          把 <span class="hero-highlight hero-highlight--yellow">AI 能力</span>
+          变成能落地的
+          <span class="hero-highlight hero-highlight--blue">产品方案</span>
+        </h1>
+        <p class="hero-summary">
+          湖南农业大学硕士在读（2024—2027），聚焦企业知识库、RAG 与行业智能化场景，
+          具备从需求调研、PRD / 原型设计，到测试评估、Bad Case 收敛和方案交付支持的完整项目经验。
+        </p>
+
+        <div class="hero-actions">
+          <a href="/projects" class="button button--primary">查看项目</a>
+          <a href="/contact" class="button button--secondary">联系我</a>
+        </div>
+
+        <ul class="hero-tags" aria-label="能力关键词">
+          {heroTags.map((tag, index) => (
+            <li class:list={['hero-tag', `hero-tag--${index % 3}`]}>{tag}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="identity-card">
+          <span class="identity-sticker identity-sticker--pink">求职中</span>
+          <span class="identity-sticker identity-sticker--blue">Portfolio</span>
+
+          <div class="illustration">
+            <div class="illustration-orb illustration-orb--yellow"></div>
+            <div class="illustration-orb illustration-orb--blue"></div>
+            <div class="illustration-orb illustration-orb--pink"></div>
+
+            <div class="illustration-figure">
+              <span class="figure-head"></span>
+              <span class="figure-body"></span>
+              <span class="figure-laptop"></span>
+              <span class="figure-desk"></span>
+            </div>
+          </div>
+
+          <div class="identity-meta">
+            <p class="identity-meta__title">AI 产品落地 / RAG / ToB &amp; ToG</p>
+            <p class="identity-meta__text">
+              用产品语言把复杂能力讲清楚，也把复杂流程拆到能落地。
+            </p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Project Showcase with Images -->
-    <section class="projects-showcase">
-      <h2 class="section-title">项目作品</h2>
-      
+    <section class="section-block">
+      <div class="section-head">
+        <span class="section-pill">成果速览</span>
+        <h2 class="section-title">先在 10 秒内看懂我做过什么</h2>
+      </div>
+
+      <div class="fact-grid">
+        {quickFacts.map((fact) => (
+          <article class:list={['fact-card', `fact-card--${fact.tone}`]}>
+            <p class="fact-value">{fact.value}</p>
+            <h3 class="fact-label">{fact.label}</h3>
+            <p class="fact-detail">{fact.detail}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="section-block">
+      <div class="section-head">
+        <span class="section-pill">代表项目</span>
+        <h2 class="section-title">不是堆列表，而是先看最能代表能力的 3 个项目</h2>
+      </div>
+
       <div class="project-grid">
-        <div class="project-card">
-          <div class="project-image">
-            <img src="/筑云知识库首页.png" alt="筑云智库知识平台首页" class="project-img" />
-          </div>
-          <div class="project-info">
-            <span class="project-role">AI产品经理（实习） · 2026</span>
-            <h3 class="project-title">筑云智库知识平台</h3>
-            <p class="project-desc">参与某省电信数据中心知识平台从 Demo 验证推进到立项评估，围绕引用溯源、图文回答与 PDF 预览定位等能力做设计与测试收敛。</p>
-            <a href="/projects/zhuyun-knowledge-platform" class="project-link">了解更多 →</a>
-          </div>
-        </div>
+        {featuredProjects.map((project) => (
+          <article class:list={['project-card', `project-card--${project.tone}`]}>
+            <div class="project-card__media">
+              {project.image ? (
+                <img src={project.image} alt={project.imageAlt} class="project-card__image" />
+              ) : (
+                <div class="project-card__placeholder">
+                  <span>{project.kicker}</span>
+                  <strong>{project.title}</strong>
+                </div>
+              )}
+            </div>
 
-        <div class="project-card">
-          <div class="project-image">
-            <div class="project-image-placeholder">某地石化电子操作票 AI 应用</div>
-          </div>
-          <div class="project-info">
-            <span class="project-role">AI产品经理（实习） · 2026</span>
-            <h3 class="project-title">某地石化电子操作票 AI 应用</h3>
-            <p class="project-desc">基于既有系统做二期升级，访谈 6 个部门、梳理 33 项需求，独立完成可行性报告与系统原型，规划 AI 审核、唱票识别、DCS 联动与全流程风控机制。</p>
-            <a href="/projects/local-operation-ticket-ai" class="project-link">了解更多 →</a>
-          </div>
-        </div>
-
-        <div class="project-card">
-          <div class="project-image">
-            <div class="project-image-placeholder">RouteRAG / MyOCR</div>
-          </div>
-          <div class="project-info">
-            <span class="project-role">个人预研项目 · 2026</span>
-            <h3 class="project-title">RouteRAG</h3>
-            <p class="project-desc">围绕复杂光缆路由图场景设计多模态 RAG Demo，完成 PRD、三层架构、固定 schema 与检索 / 抽取 / 展示链路设计，当前推进 MVP 骨架验证。</p>
-            <a href="/projects/route-rag" class="project-link">了解更多 →</a>
-          </div>
-        </div>
+            <div class="project-card__body">
+              <div class="project-card__meta">
+                <span>{project.role}</span>
+                <span>{project.year}</span>
+              </div>
+              <h3 class="project-card__title">{project.title}</h3>
+              <p class="project-card__summary">{project.summary}</p>
+              <p class="project-card__impact">{project.impact}</p>
+              <a href={project.href} class="project-card__link">查看项目详情</a>
+            </div>
+          </article>
+        ))}
       </div>
     </section>
 
-    <!-- Skills Section -->
-    <section class="skills-section">
-      <h2 class="section-title">技能领域</h2>
-      <div class="skills-grid">
-        <div class="skill-item">
-          <span class="skill-name">需求调研</span>
-        </div>
-        <div class="skill-item">
-          <span class="skill-name">PRD / 原型设计</span>
-        </div>
-        <div class="skill-item">
-          <span class="skill-name">RAG链路理解</span>
-        </div>
-        <div class="skill-item">
-          <span class="skill-name">测试评估</span>
-        </div>
-        <div class="skill-item">
-          <span class="skill-name">Bad Case收敛</span>
-        </div>
-        <div class="skill-item">
-          <span class="skill-name">方案汇报</span>
-        </div>
+    <section class="section-block section-block--split">
+      <div class="section-head">
+        <span class="section-pill">工作方式</span>
+        <h2 class="section-title">我更像一个会把复杂问题讲清楚并推进下去的产品同学</h2>
+      </div>
+
+      <div class="workflow-grid">
+        {workModes.map((mode) => (
+          <article class:list={['workflow-card', `workflow-card--${mode.tone}`]}>
+            <h3 class="workflow-card__title">{mode.title}</h3>
+            <p class="workflow-card__description">{mode.description}</p>
+          </article>
+        ))}
       </div>
     </section>
 
-    <!-- Experience Section -->
-    <section class="experience-section">
-      <h2 class="section-title">职业历程</h2>
-      <div class="experience-timeline">
-        <div class="experience-item">
-          <span class="experience-year">2025.12—2026.03</span>
-          <h3 class="experience-title">广州浩传科技 · AI产品经理（实习）</h3>
-          <p class="experience-desc">参与电信、石化、煤矿、政务等 ToB / ToG 场景 AI 产品项目，覆盖需求调研、原型设计、测试推进、方案汇报与客户演示支持。</p>
-        </div>
-        <div class="experience-item">
-          <span class="experience-year">2024—2027</span>
-          <h3 class="experience-title">湖南农业大学 · 农学硕士在读</h3>
-          <p class="experience-desc">预计 2027 年毕业，持续补齐产品经理、AI 应用与知识库/RAG 方向的实践能力。</p>
-        </div>
+    <section class="section-block section-block--narrow">
+      <div class="section-head">
+        <span class="section-pill">职业历程</span>
+        <h2 class="section-title">目前的学习与实践轨迹</h2>
+      </div>
+
+      <div class="timeline">
+        {timeline.map((item, index) => (
+          <article class="timeline-item">
+            <span class="timeline-marker">{index + 1}</span>
+            <div class="timeline-item__content">
+              <p class="timeline-period">{item.period}</p>
+              <h3 class="timeline-title">{item.title}</h3>
+              <p class="timeline-description">{item.description}</p>
+            </div>
+          </article>
+        ))}
       </div>
     </section>
 
-    <!-- CTA -->
-    <section class="cta">
-      <h2>欢迎交流</h2>
-      <p>如果你对 AI 产品、企业知识库、RAG 或行业智能化场景感兴趣，欢迎和我交流。</p>
-      <div class="cta-buttons">
-        <a href="/projects" class="btn-primary">查看我的作品</a>
-        <a href="/contact" class="btn-secondary">联系我</a>
+    <section class="cta-panel">
+      <div>
+        <span class="section-pill">继续浏览</span>
+        <h2 class="section-title section-title--compact">如果你想继续了解我，下一步直接看项目或联系我。</h2>
+      </div>
+
+      <div class="cta-panel__actions">
+        <a href="/projects" class="button button--primary">去看全部项目</a>
+        <a href="/contact" class="button button--secondary">发起联系</a>
       </div>
     </section>
   </main>
 
   <style>
     .home-page {
-      max-width: 1200px;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 0 1.5rem 4rem;
+      padding: 2rem 1rem 4.5rem;
     }
 
-    .section-title {
-      font-size: 2.5rem;
-      font-weight: 700;
+    .hero,
+    .section-block,
+    .cta-panel {
       margin-bottom: 2rem;
-      letter-spacing: -0.02em;
+      border: 2.5px solid var(--color-border);
+      border-radius: 2rem;
+      background: var(--color-bg-elevated);
+      box-shadow: 6px 6px 0 var(--color-border), var(--shadow-md);
     }
 
-    /* Hero Section */
     .hero {
-      padding: 6rem 0 4rem;
-      border-bottom: 2px solid var(--color-text);
-      margin-bottom: 4rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
+      gap: 2rem;
+      padding: 2rem;
     }
 
-    .hero-content {
-      display: grid;
-      grid-template-columns: 1fr 300px;
-      gap: 4rem;
+    .hero-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .hero-badges,
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .badge,
+    .section-pill,
+    .hero-tag {
+      display: inline-flex;
       align-items: center;
+      justify-content: center;
+      padding: 0.45rem 0.9rem;
+      border: 2px solid var(--color-border);
+      border-radius: var(--border-radius-pill);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .badge--blue,
+    .hero-tag--1,
+    .fact-card--blue,
+    .project-card--blue .project-card__placeholder,
+    .workflow-card--blue {
+      background: var(--color-tag-blue);
+    }
+
+    .badge--yellow,
+    .hero-tag--0,
+    .fact-card--yellow,
+    .project-card--yellow .project-card__placeholder,
+    .workflow-card--yellow {
+      background: var(--color-tag-yellow);
+    }
+
+    .badge--pink,
+    .hero-tag--2,
+    .fact-card--pink,
+    .project-card--pink .project-card__placeholder,
+    .workflow-card--pink {
+      background: var(--color-tag-pink);
+    }
+
+    .fact-card--green,
+    .workflow-card--green {
+      background: var(--color-tag-green);
+    }
+
+    .section-pill {
+      background: var(--color-tag-yellow);
+      margin-bottom: 1rem;
+    }
+
+    .hero-kicker {
+      margin-top: 1.25rem;
+      margin-bottom: 0.8rem;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-text-secondary);
     }
 
     .hero-title {
-      font-size: 4rem;
-      line-height: 1.1;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      margin-bottom: 1rem;
+      max-width: 12ch;
+      font-size: clamp(2.9rem, 6vw, 5.4rem);
+      line-height: 0.98;
+      letter-spacing: -0.05em;
+      font-weight: 800;
+      margin-bottom: 1.2rem;
     }
 
-    .profile-photo {
-      width: 250px;
-      height: 300px;
-      object-fit: cover;
-      border: 2px solid var(--color-text);
+    .hero-highlight {
+      display: inline-block;
+      margin: 0 0.15em;
+      padding: 0.05em 0.18em;
+      border-radius: 0.35em;
+      box-shadow: inset 0 -0.45em 0 rgba(0, 0, 0, 0.03);
     }
 
-    .hero-label {
-      display: block;
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--color-text-muted);
-      margin-bottom: 0.5rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
+    .hero-highlight--yellow {
+      background: var(--color-tag-yellow);
     }
 
-    .hero-sub {
-      font-size: 1.25rem;
+    .hero-highlight--blue {
+      background: var(--color-tag-blue);
+    }
+
+    .hero-summary {
+      max-width: 58ch;
+      margin-bottom: 1.6rem;
+      font-size: 1.05rem;
       color: var(--color-text-secondary);
-      margin-bottom: 1rem;
     }
 
-    .hero-desc {
-      font-size: 1rem;
-      color: var(--color-text-muted);
-      margin-bottom: 2rem;
-      max-width: 500px;
-    }
-
-    .hero-cta {
+    .hero-actions,
+    .cta-panel__actions {
       display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0.9rem 1.35rem;
+      border: 2.5px solid var(--color-border);
+      border-radius: var(--border-radius-pill);
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+    }
+
+    .button--primary {
+      background: var(--color-border);
+      color: var(--color-bg);
+    }
+
+    .button--primary:hover {
+      color: var(--color-bg);
+      background: #342d27;
+    }
+
+    .button--secondary {
+      background: transparent;
+      color: var(--color-text);
+    }
+
+    .button--secondary:hover {
+      background: var(--color-tag-blue);
+      color: var(--color-text);
+    }
+
+    .hero-tags {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .hero-visual {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    .identity-card {
+      position: relative;
+      width: 100%;
+      min-height: 460px;
+      padding: 1.25rem;
+      border: 2.5px solid var(--color-border);
+      border-radius: 1.8rem;
+      background: linear-gradient(180deg, #fffdf7 0%, #fff1de 100%);
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+    }
+
+    .identity-sticker {
+      position: absolute;
+      top: 1rem;
+      padding: 0.45rem 0.8rem;
+      border: 2px solid var(--color-border);
+      border-radius: var(--border-radius-pill);
+      font-size: 0.78rem;
+      font-weight: 700;
+      z-index: 2;
+    }
+
+    .identity-sticker--pink {
+      left: 1rem;
+      background: var(--color-tag-pink);
+      transform: rotate(-5deg);
+    }
+
+    .identity-sticker--blue {
+      right: 1rem;
+      background: var(--color-tag-blue);
+      transform: rotate(6deg);
+    }
+
+    .illustration {
+      position: relative;
+      height: 310px;
+      margin-top: 2.2rem;
+      border: 2px solid var(--color-border);
+      border-radius: 1.4rem;
+      background: rgba(255, 255, 255, 0.65);
+      overflow: hidden;
+    }
+
+    .illustration-orb {
+      position: absolute;
+      border-radius: 999px;
+      opacity: 0.95;
+    }
+
+    .illustration-orb--yellow {
+      width: 190px;
+      height: 190px;
+      top: 32px;
+      left: 28px;
+      background: var(--color-tag-yellow);
+    }
+
+    .illustration-orb--blue {
+      width: 160px;
+      height: 160px;
+      top: 46px;
+      right: 24px;
+      background: var(--color-tag-blue);
+    }
+
+    .illustration-orb--pink {
+      width: 120px;
+      height: 120px;
+      bottom: 36px;
+      left: 126px;
+      background: var(--color-tag-pink);
+    }
+
+    .illustration-figure {
+      position: absolute;
+      inset: 0;
+    }
+
+    .figure-head,
+    .figure-body,
+    .figure-laptop,
+    .figure-desk {
+      position: absolute;
+      display: block;
+      border: 2px solid var(--color-border);
+      background: var(--color-bg-elevated);
+    }
+
+    .figure-head {
+      width: 92px;
+      height: 92px;
+      top: 68px;
+      left: 50%;
+      margin-left: -46px;
+      border-radius: 44px 44px 36px 36px;
+      background: #ffd6b7;
+    }
+
+    .figure-body {
+      width: 182px;
+      height: 116px;
+      left: 50%;
+      bottom: 74px;
+      margin-left: -91px;
+      border-radius: 32px 32px 22px 22px;
+      background: #fff8ef;
+    }
+
+    .figure-laptop {
+      width: 190px;
+      height: 94px;
+      left: 50%;
+      bottom: 58px;
+      margin-left: -95px;
+      border-radius: 1rem;
+      background: var(--color-tag-blue);
+      transform: skew(-10deg);
+    }
+
+    .figure-desk {
+      width: calc(100% - 60px);
+      height: 18px;
+      left: 30px;
+      bottom: 32px;
+      border-radius: var(--border-radius-pill);
+      background: var(--color-border);
+    }
+
+    .identity-meta {
+      padding: 1.2rem 0.3rem 0.1rem;
+    }
+
+    .identity-meta__title {
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+      font-weight: 800;
+    }
+
+    .identity-meta__text {
+      font-size: 0.95rem;
+      color: var(--color-text-secondary);
+    }
+
+    .section-block {
+      padding: 1.8rem;
+    }
+
+    .section-block--split,
+    .section-block--narrow {
+      background: rgba(255, 253, 248, 0.95);
+    }
+
+    .section-head {
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      max-width: 18ch;
+      font-size: clamp(2rem, 3.4vw, 3.2rem);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+      font-weight: 800;
+    }
+
+    .section-title--compact {
+      max-width: 13ch;
+    }
+
+    .fact-grid,
+    .workflow-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 1rem;
     }
 
-    .btn-primary {
-      display: inline-block;
-      padding: 1rem 2rem;
-      background: var(--color-text);
-      color: var(--color-bg);
-      font-weight: 600;
-      font-size: 1rem;
-      text-decoration: none;
-      transition: opacity 0.2s ease;
+    .fact-card,
+    .workflow-card,
+    .timeline-item {
+      border: 2px solid var(--color-border);
+      border-radius: 1.35rem;
+      padding: 1.2rem;
+      box-shadow: var(--shadow-sm);
     }
 
-    .btn-primary:hover {
-      opacity: 0.8;
+    .fact-value {
+      margin-bottom: 0.35rem;
+      font-size: 1.55rem;
+      font-weight: 800;
+      line-height: 1;
     }
 
-    .btn-secondary {
-      display: inline-block;
-      padding: 1rem 2rem;
-      background: transparent;
-      color: var(--color-text);
-      font-weight: 500;
-      font-size: 1rem;
-      text-decoration: none;
-      border: 2px solid var(--color-text);
-      transition: background 0.2s ease, color 0.2s ease;
+    .fact-label,
+    .workflow-card__title,
+    .timeline-title {
+      margin-bottom: 0.55rem;
+      font-size: 1.02rem;
+      font-weight: 800;
     }
 
-    .btn-secondary:hover {
-      background: var(--color-text);
-      color: var(--color-bg);
-    }
-
-    /* Projects Showcase */
-    .projects-showcase {
-      margin-bottom: 5rem;
+    .fact-detail,
+    .workflow-card__description,
+    .timeline-description {
+      color: var(--color-text-secondary);
+      font-size: 0.95rem;
     }
 
     .project-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
     }
 
     .project-card {
-      border: 2px solid var(--color-text);
+      display: flex;
+      flex-direction: column;
       overflow: hidden;
+      border: 2px solid var(--color-border);
+      border-radius: 1.5rem;
+      background: var(--color-bg-elevated);
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
     }
 
-    .project-image {
-      aspect-ratio: 16/9;
+    .project-card:hover,
+    .workflow-card:hover,
+    .fact-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .project-card__media {
+      aspect-ratio: 16 / 10;
+      border-bottom: 2px solid var(--color-border);
       background: var(--color-bg-secondary);
-      border-bottom: 2px solid var(--color-text);
       overflow: hidden;
     }
 
-    .project-img {
+    .project-card__image {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
 
-    .project-image-placeholder {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
-      color: var(--color-text-muted);
-      font-size: 1.25rem;
-      font-weight: 500;
-    }
-
-    .project-info {
-      padding: 1.5rem;
-    }
-
-    .project-role {
-      display: block;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--color-text-muted);
-      margin-bottom: 0.5rem;
-    }
-
-    .project-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      letter-spacing: -0.01em;
-    }
-
-    .project-desc {
-      font-size: 1rem;
-      color: var(--color-text-secondary);
-      margin-bottom: 1rem;
-      line-height: 1.6;
-    }
-
-    .project-link {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--color-text);
-      text-decoration: none;
-    }
-
-    .project-link:hover {
-      text-decoration: underline;
-    }
-
-    /* Skills Section */
-    .skills-section {
-      margin-bottom: 5rem;
-    }
-
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-    }
-
-    .skill-item {
-      padding: 1rem 1.5rem;
-      border: 2px solid var(--color-text);
-      text-align: center;
-    }
-
-    .skill-name {
-      font-size: 1rem;
-      font-weight: 600;
-    }
-
-    /* Experience Section */
-    .experience-section {
-      margin-bottom: 5rem;
-    }
-
-    .experience-timeline {
+    .project-card__placeholder {
       display: flex;
       flex-direction: column;
-      gap: 2rem;
+      justify-content: space-between;
+      width: 100%;
+      height: 100%;
+      padding: 1rem;
+      color: var(--color-text);
     }
 
-    .experience-item {
-      padding: 1.5rem;
-      border-left: 4px solid var(--color-text);
-      background: var(--color-bg-secondary);
+    .project-card__placeholder span {
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
     }
 
-    .experience-year {
-      display: block;
-      font-size: 0.875rem;
+    .project-card__placeholder strong {
+      max-width: 12ch;
+      font-size: 1.35rem;
+      line-height: 1.1;
+    }
+
+    .project-card__body {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      padding: 1.2rem;
+    }
+
+    .project-card__meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.6rem;
+      margin-bottom: 0.7rem;
+      font-size: 0.8rem;
       font-weight: 700;
       color: var(--color-text-muted);
-      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
 
-    .experience-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
+    .project-card__title {
+      margin-bottom: 0.55rem;
+      font-size: 1.45rem;
+      line-height: 1.08;
+      font-weight: 800;
     }
 
-    .experience-desc {
-      font-size: 0.9375rem;
+    .project-card__summary,
+    .project-card__impact {
       color: var(--color-text-secondary);
-      line-height: 1.6;
+      font-size: 0.98rem;
     }
 
-    /* CTA */
-    .cta {
-      padding: 3rem 0;
-      border-top: 2px solid var(--color-text);
-    }
-
-    .cta h2 {
-      font-size: 2rem;
-      font-weight: 700;
+    .project-card__summary {
       margin-bottom: 0.75rem;
     }
 
-    .cta p {
-      font-size: 1rem;
-      color: var(--color-text-secondary);
-      margin-bottom: 1.5rem;
-      max-width: 500px;
+    .project-card__impact {
+      margin-bottom: 1rem;
+      font-weight: 600;
     }
 
-    .cta-buttons {
-      display: flex;
+    .project-card__link {
+      margin-top: auto;
+      font-weight: 800;
+      color: var(--color-text);
+    }
+
+    .project-card__link:hover {
+      color: var(--color-accent);
+    }
+
+    .timeline {
+      display: grid;
       gap: 1rem;
     }
 
-    @media (max-width: 768px) {
-      .home-page {
-        padding: 0 1rem 3rem;
+    .timeline-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1rem;
+      align-items: start;
+      background: var(--color-surface);
+    }
+
+    .timeline-marker {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.2rem;
+      height: 2.2rem;
+      border: 2px solid var(--color-border);
+      border-radius: 50%;
+      background: var(--color-tag-yellow);
+      font-weight: 800;
+    }
+
+    .timeline-period {
+      margin-bottom: 0.35rem;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .cta-panel {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      padding: 1.8rem;
+      background: linear-gradient(135deg, rgba(244, 213, 106, 0.35) 0%, rgba(255, 255, 255, 0.95) 55%, rgba(188, 215, 255, 0.32) 100%);
+    }
+
+    .cta-panel__actions {
+      margin-bottom: 0;
+    }
+
+    @media (max-width: 1080px) {
+      .hero,
+      .project-grid,
+      .fact-grid,
+      .workflow-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .hero {
-        padding: 3rem 0 2rem;
+        align-items: start;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .home-page {
+        padding: 1.2rem 0.75rem 3.5rem;
       }
 
-      .hero-content {
+      .hero {
         grid-template-columns: 1fr;
-        gap: 2rem;
       }
 
-      .hero-title {
-        font-size: 2.5rem;
-      }
-
-      .profile-photo {
-        width: 200px;
-        height: 240px;
-        margin: 0 auto;
-      }
-
+      .hero-title,
       .section-title {
-        font-size: 1.75rem;
+        max-width: none;
       }
 
-      .skills-grid {
-        grid-template-columns: repeat(2, 1fr);
+      .identity-card {
+        min-height: 420px;
       }
 
-      .hero-cta,
-      .cta-buttons {
+      .cta-panel {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero,
+      .section-block,
+      .cta-panel {
+        padding: 1.25rem;
+        border-radius: 1.5rem;
+        box-shadow: 4px 4px 0 var(--color-border), var(--shadow-sm);
+      }
+
+      .fact-grid,
+      .workflow-grid,
+      .project-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-actions,
+      .cta-panel__actions {
+        width: 100%;
         flex-direction: column;
       }
 
-      .btn-primary,
-      .btn-secondary {
-        text-align: center;
+      .button {
         width: 100%;
+      }
+
+      .hero-summary,
+      .fact-detail,
+      .workflow-card__description,
+      .timeline-description,
+      .project-card__summary,
+      .project-card__impact {
+        font-size: 0.94rem;
+      }
+
+      .illustration {
+        height: 260px;
+      }
+
+      .figure-body {
+        width: 156px;
+        margin-left: -78px;
+      }
+
+      .figure-laptop {
+        width: 166px;
+        margin-left: -83px;
       }
     }
   </style>

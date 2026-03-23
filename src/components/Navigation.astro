@@ -1,48 +1,13 @@
 ---
-/**
- * Navigation Component
- * 
- * Main site navigation with responsive behavior and theme toggle. Features centered
- * navigation on desktop and horizontal scrolling on mobile. The theme toggle is fixed
- * at the right edge with a gradient fade effect.
- * 
- * Navigation items are configured in src/config.ts and automatically include a "Home"
- * link at the beginning. Active page highlighting is handled both server-side and
- * client-side for View Transitions support.
- * 
- * @component
- * 
- * @example
- * ```astro
- * <Navigation />
- * ```
- */
 import { siteConfig } from '../config';
-import ThemeToggle from './ThemeToggle.astro';
 
 const currentPath = Astro.url.pathname;
 
-/**
- * Navigation items with Home prepended
- * 
- * Combines a hardcoded Home link with navigation items from site config
- * to ensure Home is always first in the navigation.
- */
 const navItems = [
-  { label: 'Home', href: '/' },
+  { label: '首页', href: '/' },
   ...siteConfig.nav,
 ];
 
-/**
- * Determines if a navigation item should be marked as active
- * 
- * Home link is only active on the exact root path. Other links are active
- * if the current path starts with their href, allowing child pages to
- * highlight their parent navigation item.
- * 
- * @param href - The navigation item's URL
- * @returns True if the navigation item should be marked as active
- */
 const isActive = (href: string) => {
   if (href === '/') {
     return currentPath === '/';
@@ -51,24 +16,25 @@ const isActive = (href: string) => {
 };
 ---
 
-<nav class="site-nav" aria-label="Main navigation">
-  <div class="nav-scroll">
-    <ul class="nav-list">
-      {navItems.map((item) => (
-        <li class="nav-item">
-          <a 
-            href={item.href} 
-            class:list={['nav-link', { 'nav-link--active': isActive(item.href) }]}
-            aria-current={isActive(item.href) ? 'page' : undefined}
-          >
-            {item.label}
-          </a>
-        </li>
-      ))}
-    </ul>
-  </div>
-  <div class="nav-end">
-    <ThemeToggle />
+<nav class="site-nav" aria-label="主导航">
+  <div class="nav-pill">
+    <span class="nav-kicker">{siteConfig.author.name} · PM Portfolio</span>
+
+    <div class="nav-scroll">
+      <ul class="nav-list">
+        {navItems.map((item) => (
+          <li class="nav-item">
+            <a
+              href={item.href}
+              class:list={['nav-link', { 'nav-link--active': isActive(item.href) }]}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
   </div>
 </nav>
 
@@ -76,19 +42,20 @@ const isActive = (href: string) => {
   function updateActiveNav() {
     const currentPath = window.location.pathname;
     const navLinks = document.querySelectorAll('.nav-link');
-    
+
     navLinks.forEach((link) => {
       const href = link.getAttribute('href');
-      let isActive = false;
-      
+      let active = false;
+
       if (href === '/') {
-        isActive = currentPath === '/';
+        active = currentPath === '/';
       } else if (href) {
-        isActive = currentPath.startsWith(href);
+        active = currentPath.startsWith(href);
       }
-      
-      link.classList.toggle('nav-link--active', isActive);
-      if (isActive) {
+
+      link.classList.toggle('nav-link--active', active);
+
+      if (active) {
         link.setAttribute('aria-current', 'page');
       } else {
         link.removeAttribute('aria-current');
@@ -96,25 +63,45 @@ const isActive = (href: string) => {
     });
   }
 
-  // Run on initial load and after each navigation
   document.addEventListener('astro:page-load', updateActiveNav);
 </script>
 
 <style>
   .site-nav {
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+
+  .nav-pill {
     display: flex;
     align-items: center;
-    border-bottom: 1px solid var(--color-border);
-    background: var(--color-bg);
-    padding: var(--space-md) 0;
-    margin-bottom: var(--space-md);
+    gap: 1rem;
+    padding: 0.8rem 1rem;
+    border: 2.5px solid var(--color-border);
+    border-radius: 999px;
+    background: rgba(255, 250, 243, 0.92);
+    box-shadow: 0 18px 32px rgba(102, 80, 52, 0.12), 4px 4px 0 var(--color-border);
+    backdrop-filter: blur(10px);
+  }
+
+  .nav-kicker {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.7rem 1rem;
+    border-radius: 999px;
+    background: var(--color-tag-yellow);
+    color: var(--color-text);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 
   .nav-scroll {
     flex: 1;
     overflow-x: auto;
     overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
@@ -125,78 +112,67 @@ const isActive = (href: string) => {
 
   .nav-list {
     display: flex;
-    flex-wrap: nowrap;
-    justify-content: center;
-    gap: 2rem;
+    justify-content: flex-end;
+    gap: 0.45rem;
     list-style: none;
     margin: 0;
-    padding: 0.5rem 1.5rem;
+    padding: 0;
     min-width: max-content;
   }
 
   .nav-item {
     margin: 0;
-    flex-shrink: 0;
   }
 
   .nav-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.7rem 1rem;
+    border-radius: 999px;
     color: var(--color-text-secondary);
-    font-size: 0.8125rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-size: 0.95rem;
+    font-weight: 700;
     text-decoration: none;
-    transition: color 0.2s ease;
-    white-space: nowrap;
+    transition: transform var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
   }
 
   .nav-link:hover {
     color: var(--color-text);
+    background: var(--color-tag-blue);
+    transform: translateY(-1px);
   }
 
   .nav-link--active {
-    color: var(--color-text);
+    color: var(--color-bg);
+    background: var(--color-border);
   }
 
-  .nav-end {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    padding: 0 0.75rem;
-    border-left: 1px solid var(--color-border);
-    background: var(--color-bg);
-    position: relative;
+  .nav-link--active:hover {
+    background: var(--color-border);
+    color: var(--color-bg);
+    transform: none;
   }
 
-  .nav-end::before {
-    content: '';
-    position: absolute;
-    left: -24px;
-    top: 0;
-    bottom: 0;
-    width: 24px;
-    background: linear-gradient(to right, transparent, var(--color-bg));
-    pointer-events: none;
-  }
+  @media (max-width: 760px) {
+    .nav-pill {
+      gap: 0.65rem;
+      padding: 0.65rem 0.75rem;
+    }
 
-  @media (max-width: 768px) {
+    .nav-kicker {
+      display: none;
+    }
+
     .nav-list {
       justify-content: flex-start;
-      gap: 1.5rem;
-      padding: 0.5rem 1rem;
+      gap: 0.35rem;
     }
 
     .nav-link {
-      font-size: 0.75rem;
-    }
-
-    .nav-end {
-      padding: 0 0.5rem;
-    }
-
-    .nav-end::before {
-      left: -16px;
-      width: 16px;
+      padding: 0.65rem 0.9rem;
+      font-size: 0.88rem;
     }
   }
 </style>
