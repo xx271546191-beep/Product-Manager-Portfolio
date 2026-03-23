@@ -48,7 +48,7 @@ export const siteConfig = {
    * Should be the full production URL without trailing slash.
    * Example: 'https://example.com'
    */
-  url: getEnv('SITE_URL', 'https://example.com'),
+  url: getEnv('SITE_URL', 'https://yuanliangpm.top'),
   
   /**
    * Site language (ISO 639-1 code)
@@ -63,14 +63,17 @@ export const siteConfig = {
    * 
    * Used as fallback when page-specific title is not provided.
    */
-  title: getEnv('SITE_TITLE', 'Professional Portfolio'),
+  title: getEnv('SITE_TITLE', '何远梁 | AI产品经理实习生作品集'),
   
   /**
    * Site description
    * 
    * Default meta description for SEO and social sharing.
    */
-  description: getEnv('SITE_DESCRIPTION', 'Engineering leader specializing in system architecture, technical decision-making, and delivering measurable business impact.'),
+  description: getEnv(
+    'SITE_DESCRIPTION',
+    '面向企业知识库与行业智能化场景的 AI 产品经理实习生作品集，展示需求调研、PRD/原型设计、测试评估、Bad Case 收敛与方案交付支持经验。'
+  ),
   
   /**
    * Author information
@@ -80,19 +83,22 @@ export const siteConfig = {
    */
   author: {
     /** Full name */
-    name: getEnv('SITE_AUTHOR_NAME', 'Your Name'),
+    name: getEnv('SITE_AUTHOR_NAME', '何远梁'),
     
     /** Professional title or role */
-    title: getEnv('SITE_AUTHOR_TITLE', 'Senior Software Engineer'),
+    title: getEnv('SITE_AUTHOR_TITLE', 'AI产品经理实习生'),
     
     /** Short biography or professional summary */
-    bio: getEnv('SITE_AUTHOR_BIO', 'Engineering leader focused on solving complex technical challenges through thoughtful architecture and pragmatic trade-off analysis.'),
+    bio: getEnv(
+      'SITE_AUTHOR_BIO',
+      '面向企业知识库与行业智能化场景，具备从需求调研、PRD/原型设计、测试评估、Bad Case 收敛到方案交付支持的完整项目经验。'
+    ),
     
     /** Contact email address */
-    email: getEnv('SITE_AUTHOR_EMAIL', 'hello@example.com'),
+    email: getEnv('SITE_AUTHOR_EMAIL', '15917364099@163.com'),
     
     /** Location (optional, empty string to hide) */
-    location: getEnv('SITE_AUTHOR_LOCATION', ''),
+    location: getEnv('SITE_AUTHOR_LOCATION', '中国'),
   },
   
   /**
@@ -103,7 +109,7 @@ export const siteConfig = {
    */
   social: {
     /** GitHub profile URL */
-    github: getEnv('SOCIAL_GITHUB', ''),
+    github: getEnv('SOCIAL_GITHUB', 'https://github.com/xx271546191-beep'),
     
     /** LinkedIn profile URL */
     linkedin: getEnv('SOCIAL_LINKEDIN', ''),

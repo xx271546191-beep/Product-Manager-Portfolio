@@ -16,12 +16,12 @@ interface PageMeta {
 export const pagesConfig = {
   home: {
     title: '首页',
-    description: '产品经理作品集 - 湖南农大硕士，AI知识库产品实习经历',
+    description: 'AI产品经理实习生作品集，聚焦企业知识库、RAG 与行业智能化场景下的需求分析、原型设计、测试评估与方案推进。',
   },
   
   projects: {
     title: '项目作品',
-    description: '项目案例展示，包括问题分析、解决方案和成果体现。',
+    description: '项目案例展示，覆盖企业知识库、石化流程升级与复杂工业图纸智能处理等 AI 产品实践。',
     heading: '项目作品',
     intro: '这里展示了我参与的项目案例，讲述每个项目的背景、挑战、决策过程和最终成果。',
   },
@@ -35,7 +35,7 @@ export const pagesConfig = {
   
   journey: {
     title: '职业历程',
-    description: '我的职业发展时间线，展示成长轨迹和重要里程碑。',
+    description: '我的学习与实习时间线，展示从农学硕士到 AI 产品经理实习生的成长过程。',
     heading: '职业历程',
     intro: '记录我的职业发展历程，包括重要的学习经历、实习经历和成长时刻。',
   },
@@ -63,7 +63,7 @@ export const pagesConfig = {
   
   contact: {
     title: '联系我',
-    description: '欢迎联系我讨论产品相关话题。',
+    description: '欢迎联系我交流 AI 产品、知识库/RAG 与行业智能化相关话题。',
     heading: '联系我',
   },
 } as const;
